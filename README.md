@@ -42,6 +42,7 @@ coding.
 - [Database and migrations](#database-and-migrations)
 - [Security](#security)
 - [Troubleshooting](#troubleshooting)
+- [User guide](docs/user-guide.md)
 - [Enhancements](#enhancements)
 - [Credits](#credits)
 - [Contributing](#contributing)
