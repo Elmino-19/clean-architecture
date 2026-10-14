@@ -25,12 +25,12 @@ PROJECT_ROOT = Path(
     os.environ.get("FASTDDD_PROJECT_ROOT", Path(__file__).resolve().parent.parent)
 ).resolve()
 
-SLUG_DASHED = "fastapi-clean-architecture-ddd-template"
-SLUG_UNDERSCORED = "fastapi_clean_architecture_ddd_template"
-TITLE = "FastAPI Clean Architecture and DDD Template"
-AUTHOR = "Bruno Tanabe"
-AUTHOR_EMAIL = "tanabebruno@gmail.com"
-AUTHOR_URL = "https://github.com/BrunoTanabe"
+SLUG_DASHED = "clean-architecture"
+SLUG_UNDERSCORED = "clean_architecture"
+TITLE = "Clean Architecture"
+AUTHOR = "Erfan Mohamadnia"
+AUTHOR_EMAIL = "zelzeleh.19@gmail.com"
+AUTHOR_URL = "https://github.com/Elmino-19"
 
 SKIP_DIRS = {
     ".git",

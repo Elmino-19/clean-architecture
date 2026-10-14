@@ -901,10 +901,9 @@ uv sync
 
 ## تقدیر
 
-این پروژه بر پایهٔ قالب
-[FastAPI Clean Architecture and DDD Template](https://github.com/BrunoTanabe/fastapi-clean-architecture-ddd-template)
-اثر **Bruno Tanabe** ساخته شده است. معماری تمیز، لایه‌بندی و الگوهای اولیه حاصل
-کار ایشان است؛ از ایشان سپاسگزاریم.
+این پروژه بر پایهٔ کار **Bruno Tanabe** ([@BrunoTanabe](https://github.com/BrunoTanabe))
+ساخته شده است. معماری تمیز، لایه‌بندی و الگوهای اولیه حاصل کار ایشان است؛ از
+ایشان سپاسگزاریم.
 
 ---
 
