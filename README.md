@@ -1,70 +1,89 @@
-# پایهٔ پروژه — FastAPI + Clean Architecture + DDD
+# clean-architecture — FastAPI + Clean Architecture + DDD
 
-یک **بیس آمادهٔ تولید** برای شروع سریع پروژه‌های بک‌اند با FastAPI. معماری تمیز،
-Domain-Driven Design و همه‌چیز از قبل سیم‌کشی‌شده — به‌جای پوشه‌های خالی و یک
-دیاگرام، یک اپلیکیشن کارکننده تحویل می‌گیری و فقط کد دامنهٔ خودت را اضافه می‌کنی.
+**English** · [فارسی](README.fa.md)
 
-هدف این مخزن **پایه بودن** است: کلون کن، نامش را عوض کن، سه کامند بزن، شروع کن
-به کدنویسی.
+[![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.136-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063?logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-D71F00?logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-8-FF4438?logo=redis&logoColor=white)](https://redis.io/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![uv](https://img.shields.io/badge/uv-package%20manager-DE5FE9?logo=uv&logoColor=white)](https://docs.astral.sh/uv/)
+[![Ruff](https://img.shields.io/badge/Ruff-linted-D7FF64?logo=ruff&logoColor=black)](https://docs.astral.sh/ruff/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
----
+[![Stars](https://img.shields.io/github/stars/Elmino-19/clean-architecture?style=flat&logo=github)](https://github.com/Elmino-19/clean-architecture/stargazers)
+[![Forks](https://img.shields.io/github/forks/Elmino-19/clean-architecture?style=flat&logo=github)](https://github.com/Elmino-19/clean-architecture/network/members)
+[![Issues](https://img.shields.io/github/issues/Elmino-19/clean-architecture?style=flat&logo=github)](https://github.com/Elmino-19/clean-architecture/issues)
+[![Last commit](https://img.shields.io/github/last-commit/Elmino-19/clean-architecture?style=flat&logo=github)](https://github.com/Elmino-19/clean-architecture/commits)
 
-## فهرست
+A **production-ready base** for quickly starting FastAPI backend projects. Clean
+architecture, Domain-Driven Design, and everything already wired — instead of empty
+folders and a diagram, you get a working application and only add your own domain code.
 
-- [شروع سریع](#شروع-سریع)
-- [گردش کار از صفر](#گردش-کار-از-صفر)
-- [مرجع کامل کامندها](#مرجع-کامل-کامندها)
-- [اسکریپت‌ها](#اسکریپتها)
-- [ابزارهای opencode (اسکیل‌ها و ایجنت‌ها)](#ابزارهای-opencode-اسکیلها-و-ایجنتها)
-- [معماری](#معماری)
-- [ساختار یک ماژول](#ساختار-یک-ماژول)
-- [الگوهای خطا](#الگوهای-خطا)
-- [تست](#تست)
-- [پیکربندی (.env)](#پیکربندی-env)
-- [پایگاه داده و مهاجرت](#پایگاه-داده-و-مهاجرت)
-- [امنیت](#امنیت)
-- [عیب‌یابی](#عیبیابی)
-- [ارتقاها](#ارتقاها)
-- [تقدیر](#تقدیر)
-- [مشارکت](#مشارکت)
-- [مجوز](#مجوز)
+This repo exists to **be a base**: clone it, rename it, run three commands, start
+coding.
 
 ---
 
-## شروع سریع
+## Contents
 
-### پیش‌نیازها
+- [Quick start](#quick-start)
+- [Workflow from zero](#workflow-from-zero)
+- [Full command reference](#full-command-reference)
+- [Scripts](#scripts)
+- [opencode tools (skills and agents)](#opencode-tools-skills-and-agents)
+- [Architecture](#architecture)
+- [Module structure](#module-structure)
+- [Error patterns](#error-patterns)
+- [Tests](#tests)
+- [Configuration (.env)](#configuration-env)
+- [Database and migrations](#database-and-migrations)
+- [Security](#security)
+- [Troubleshooting](#troubleshooting)
+- [Enhancements](#enhancements)
+- [Credits](#credits)
+- [Contributing](#contributing)
+- [License](#license)
 
-| ابزار | نسخه | چرا |
+---
+
+## Quick start
+
+### Prerequisites
+
+| Tool | Version | Why |
 |---|---|---|
-| [Python](https://www.python.org/) | 3.14+ | در `.python-version` پین شده |
-| [uv](https://docs.astral.sh/uv/) | آخرین | مدیریت وابستگی و virtualenv |
-| PostgreSQL | 17 (یا Docker) | منبع حقیقت داده |
-| Redis | 8 (یا Docker) | کش و نشست‌ها |
+| [Python](https://www.python.org/) | 3.14+ | Pinned in `.python-version` |
+| [uv](https://docs.astral.sh/uv/) | latest | Dependency and virtualenv management |
+| PostgreSQL | 17 (or Docker) | Source of truth for data |
+| Redis | 8 (or Docker) | Cache and sessions |
 
-> Docker **اجباری نیست**. اگر PostgreSQL و Redis را به‌صورت native روی سیستم داری،
-> همان کافی است. کامندهای Docker فقط یک مسیر جایگزین برای بالا آوردن وابستگی‌هاست.
+> Docker is **not required**. If you already have PostgreSQL and Redis running natively
+> on your system, that is enough. The Docker commands are just an alternative way to
+> bring up the dependencies.
 
-### یک کامند
+### One command
 
 ```bash
-uv sync          # نصب وابستگی‌ها
-make install     # ویزارد: چند سؤال، بعد همه‌چیز خودکار
-make dev         # بالا آوردن سرور
+uv sync          # install dependencies
+make install     # wizard: a few questions, then everything automatic
+make dev         # start the server
 ```
 
-`make install` یک نصب‌کنندهٔ یکپارچه است که با چند پرسش، همه‌چیز را آماده می‌کند:
+`make install` is an all-in-one installer that asks a few questions, then sets up
+everything:
 
-| گام | کار |
+| Step | What it does |
 |---|---|
-| ۱ | **opencode** — اعتبارسنجی/ساخت `opencode.jsonc` و اسکیل‌ها و کامندهای `.opencode/` |
-| ۲ | **`.env`** — نوشتن کامل هر ۸۳ کلید، با secretهای تولیدشده و مقادیر مشتق از نام پروژه |
-| ۳ | **توکن‌ها** — تولید جفت‌کلیدهای JWT (Ed25519 + X25519) در `secrets/keys/` |
-| ۴ | **دیتابیس** — ساخت role + database، اجرای مهاجرت اولیه، ساخت کاربر ادمین |
-| ۵ | **جمع‌بندی** — چاپ اطلاعات ورود و گام‌های بعدی |
+| 1 | **opencode** — validate/create `opencode.jsonc` and the `.opencode/` skills and commands |
+| 2 | **`.env`** — write all 83 keys, with generated secrets and values derived from the project name |
+| 3 | **Tokens** — generate the JWT key pairs (Ed25519 + X25519) in `secrets/keys/` |
+| 4 | **Database** — create role + database, run the initial migration, create the admin user |
+| 5 | **Summary** — print the login info and next steps |
 
-سؤال‌ها فقط چیزهایی هستند که ماشین نمی‌تواند حدس بزند و بقیه با Enter قبول
-می‌شوند:
+The questions are only the things the machine cannot guess; the rest is accepted with Enter:
 
 ```text
 Project name        [my-project]
@@ -78,33 +97,34 @@ Admin password      [auto-generate]
 Install opencode skills globally too [y/N]
 ```
 
-برای حالت بدون سؤال (CI یا اسکریپت):
+For the question-free mode (CI or scripts):
 
 ```bash
 make install-yes p="Acme CRM"
-# یا کنترل کامل:
+# or full control:
 uv run python scripts/install.py --yes \
   --project "Acme CRM" --db-name acme_crm --db-user acme \
   --db-password "..." --admin-email admin@acme.io --admin-password "..."
 ```
 
-> اگر `sudo` برای ساخت role رمز بخواهد و ترمینال تعاملی نباشد، اسکریپت متوقف
-> نمی‌شود؛ دستورهای آمادهٔ کپی را چاپ می‌کند و بقیهٔ گام‌ها را ادامه می‌دهد.
+> If `sudo` asks for a password to create the role and the terminal is not interactive,
+> the script does not stop; it prints ready-to-copy commands and continues with the rest
+> of the steps.
 
-بعد از این کامندها:
+After these commands:
 
-| سرویس | آدرس |
+| Service | Address |
 |---|---|
 | API | http://localhost:8000 |
 | Swagger UI | http://localhost:8000/docs |
 | ReDoc | http://localhost:8000/redoc |
 | Health check | http://localhost:8000/health/ |
 
-ورود ادمین همان ایمیل/پسوردی است که در ویزارد تعیین کردی (در جمع‌بندی چاپ می‌شود).
+The admin login is the email/password you set in the wizard (printed in the summary).
 
-### اولین درخواست
+### First request
 
-ورود **form-encoded** است، نه JSON:
+Login is **form-encoded**, not JSON:
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/authentication/login/ \
@@ -117,343 +137,341 @@ curl http://localhost:8000/api/v1/user/me/ -b cookies.txt
 
 ---
 
-## گردش کار از صفر
+## Workflow from zero
 
-برای شروع هر پروژهٔ جدید روی این بیس:
+To start a new project on this base:
 
 ```bash
-# ۱. کلون
+# 1. Clone
 git clone https://github.com/Elmino-19/clean-architecture.git my-project && cd my-project
 
-# ۲. نام‌گذاری مجدد (اختیاری ولی توصیه‌شده)
-make rebrand name="Acme CRM" author="نام شما" email="you@acme.io"
+# 2. Rename (optional but recommended)
+make rebrand name="Acme CRM" author="Your Name" email="you@acme.io"
 
-# ۳. نصب وابستگی‌ها
+# 3. Install dependencies
 uv sync
 
-# ۴. نصب و راه‌اندازی کامل (ویزارد)
+# 4. Full install (wizard)
 make install
 
-# ۵. اجرا
+# 5. Run
 make dev
 ```
 
-اگر می‌خواهی هر گام را جدا کنترل کنی:
+To control each step separately:
 
 ```bash
-make setup       # فقط .env
-make provision   # فقط دیتابیس + مهاجرت + ادمین
-make opencode    # فقط کانفیگ opencode (نصب سراسری اسکیل‌ها)
+make setup       # only .env
+make provision   # only database + migrations + admin
+make opencode    # only opencode config (global skills install)
 ```
 
-### هر بار بعد از تغییرات
+### After every change
 
 ```bash
-make test        # اجرای تست‌ها
-make lint        # بررسی کیفیت کد
-make format      # فرمت خودکار
+make test        # run the tests
+make lint        # check code quality
+make format      # auto-format
 ```
 
 ---
 
-## مرجع کامل کامندها
+## Full command reference
 
-### راه‌اندازی اولیه
+### Initial setup
 
-| کامند | توضیح |
+| Command | Description |
 |---|---|
-| `make install` | **نصب‌کنندهٔ یکپارچه.** ویزارد چندسؤالی، سپس opencode + `.env` + توکن‌ها + دیتابیس + مهاجرت + ادمین. |
-| `make install-yes p="نام پروژه"` | همان `install` بدون هیچ سؤال. مناسب CI یا اسکریپت. `p` نام پروژه است. |
-| `make opencode` | فقط کانفیگ opencode: اعتبارسنجی `opencode.jsonc` و نصب سراسری اسکیل/کامندها در `~/.config/opencode/`. |
-| `make setup` | فقط `.env` را می‌سازد (بدون دیتابیس). |
-| `make setup-yes p="نام پروژه"` | همان `setup` بدون سؤال. |
-| `make env-check` | فقط بررسی می‌کند `.env` کامل و معتبر است یا نه. کد خروجی ۱ اگر کلیدی خالی باشد. |
-| `make provision` | role و database در PostgreSQL، مهاجرت‌ها، کاربر ادمین و بررسی Redis. همه idempotent. |
-| `make provision-check` | فقط گزارش می‌دهد چه چیزی وجود دارد و چه چیزی کم است؛ چیزی نمی‌سازد. |
-| `make bootstrap` | `setup` + `provision` پشت سر هم (همان `install` منهای گام opencode). |
-| `make rebrand name="..." author="..." email="..."` | نام template را به پروژهٔ تو تغییر می‌دهد. |
-| `make doctor` | گزارش کامل وضعیت: env، دسترسی سرویس‌ها، کلیدهای JWT، دیتابیس، ادمین. فقط-خواندن. |
+| `make install` | **All-in-one installer.** A short wizard, then opencode + `.env` + tokens + database + migrations + admin. |
+| `make install-yes p="project-name"` | Same as `install` with no questions. Good for CI or scripts. `p` is the project name. |
+| `make opencode` | Only opencode config: validates `opencode.jsonc` and installs skills/commands globally into `~/.config/opencode/`. |
+| `make setup` | Only builds `.env` (no database). |
+| `make setup-yes p="project-name"` | Same as `setup` with no questions. |
+| `make env-check` | Only checks whether `.env` is complete and valid. Exit code 1 if any key is empty. |
+| `make provision` | PostgreSQL role and database, migrations, admin user and Redis check. Everything is idempotent. |
+| `make provision-check` | Only reports what exists and what is missing; builds nothing. |
+| `make bootstrap` | `setup` + `provision` back to back (same as `install` minus the opencode step). |
+| `make rebrand name="..." author="..." email="..."` | Renames the template to your project. |
+| `make doctor` | Full status report: env, service reachability, JWT keys, database, admin. Read-only. |
 
-> **نکته:** ساخت role/database روی لینوکس به `sudo -u postgres` نیاز دارد. اگر sudo
-> رمز بخواهد و ترمینال تعاملی نباشد، اسکریپت دستورهای آمادهٔ کپی را چاپ می‌کند و
-> ادامه می‌دهد؛ اجرا کن و دوباره `make provision` بزن.
+> **Note:** creating the role/database on Linux needs `sudo -u postgres`. If sudo asks for
+> a password and the terminal is not interactive, the script prints ready-to-copy commands
+> and continues; run them and hit `make provision` again.
 
-### اجرا و توقف
+### Run and stop
 
-| کامند | توضیح |
+| Command | Description |
 |---|---|
-| `make dev` | اجرای محلی با `uvicorn --reload` روی پورت `APPLICATION_PORT`. |
-| `make start` | بالا آوردن کل استک با Docker Compose و دنبال کردن لاگ. |
-| `make start-silent` | همان، بدون دنبال کردن لاگ (detached). |
-| `make stop` | توقف استک Docker. |
-| `make delete` | توقف و **حذف volumeها** — داده‌ها پاک می‌شوند. |
+| `make dev` | Local run with `uvicorn --reload` on `APPLICATION_PORT`. |
+| `make start` | Bring up the whole stack with Docker Compose and follow the logs. |
+| `make start-silent` | Same, without following logs (detached). |
+| `make stop` | Stop the Docker stack. |
+| `make delete` | Stop and **remove volumes** — data is destroyed. |
 
-### وابستگی‌ها (Docker، اختیاری)
+### Dependencies (Docker, optional)
 
-| کامند | توضیح |
+| Command | Description |
 |---|---|
-| `make dependencies-up` | فقط PostgreSQL، pgAdmin، Redis و RedisInsight + لاگ. |
-| `make dependencies-up-silent` | همان، detached. |
-| `make dependencies-down` | توقف وابستگی‌ها. |
-| `make logs` | دنبال کردن لاگ Compose. |
+| `make dependencies-up` | Only PostgreSQL, pgAdmin, Redis and RedisInsight + logs. |
+| `make dependencies-up-silent` | Same, detached. |
+| `make dependencies-down` | Stop the dependencies. |
+| `make logs` | Follow the Compose logs. |
 | `make view-processes` | `docker ps -a`. |
 
-### کیفیت کد
+### Code quality
 
-| کامند | توضیح |
+| Command | Description |
 |---|---|
-| `make test` | اجرای کل تست‌ها با pytest. |
-| `make test-watch` | اجرای تست‌ها و تکرار خودکار با تغییر فایل‌ها. |
-| `make lint` | بررسی با Ruff. |
-| `make format` | فرمت خودکار با Ruff. |
+| `make test` | Run the whole suite with pytest. |
+| `make test-watch` | Run tests and re-run automatically on file changes. |
+| `make lint` | Check with Ruff. |
+| `make format` | Auto-format with Ruff. |
 
-### دیتابیس
+### Database
 
-| کامند | توضیح |
+| Command | Description |
 |---|---|
-| `make migrate` | اعمال مهاجرت‌ها تا head. |
-| `make migration m="create_x"` | ساخت مهاجرت جدید با autogenerate. |
+| `make migrate` | Apply migrations up to head. |
+| `make migration m="create_x"` | Create a new migration with autogenerate. |
 
-### عمومی
+### General
 
-| کامند | توضیح |
+| Command | Description |
 |---|---|
-| `make help` | فهرست همهٔ هدف‌ها. |
+| `make help` | List all targets. |
 
 ---
 
-## اسکریپت‌ها
+## Scripts
 
-همهٔ اسکریپت‌ها زیر `scripts/` هستند و هم به‌صورت `make` و هم مستقیم با
-`uv run python scripts/<name>.py` قابل اجرا.
+All scripts live under `scripts/` and can be run either via `make` or directly with
+`uv run python scripts/<name>.py`.
 
-### `install.py` — نصب‌کنندهٔ یکپارچه
+### `install.py` — the all-in-one installer
 
-قلب کار: یک ویزارد با چند سؤال که همهٔ گام‌ها را پشت سر هم انجام می‌دهد. این
-اسکریپت از `opencode_setup`، `setup_env` و `provision` استفاده می‌کند و آن‌ها را
-همه با یک جریان راهبری می‌کند. جزئیات جریان در بخش
-[شروع سریع](#یک-کامند) آمده است.
+The heart of the workflow: a wizard with a few questions that runs all steps back to
+back. This script drives `opencode_setup`, `setup_env` and `provision` through a single
+flow. See [Quick start](#one-command) for the flow details.
 
 ```bash
-uv run python scripts/install.py                    # ویزارد تعاملی
+uv run python scripts/install.py                    # interactive wizard
 uv run python scripts/install.py --yes --project "Acme CRM"
-uv run python scripts/install.py --skip-database    # فقط .env و توکن‌ها
-uv run python scripts/install.py --global-assets    # نصب سراسری اسکیل‌ها
+uv run python scripts/install.py --skip-database    # only .env and tokens
+uv run python scripts/install.py --global-assets    # global skills install
 ```
 
-| آرگومان | کار |
+| Argument | What it does |
 |---|---|
-| `--project` | نام پروژه |
-| `--db-name` / `--db-user` / `--db-password` / `--db-host` / `--db-port` | مشخصات دیتابیس |
-| `--admin-name` / `--admin-email` / `--admin-password` | حساب ادمین |
+| `--project` | Project name |
+| `--db-name` / `--db-user` / `--db-password` / `--db-host` / `--db-port` | Database connection details |
+| `--admin-name` / `--admin-email` / `--admin-password` | Admin account |
 | `--environment` | `development` \| `homolog` \| `production` |
-| `--yes` | بدون سؤال، همه پیش‌فرض‌ها |
-| `--global-assets` | کپی اسکیل/کامندها در `~/.config/opencode/` |
-| `--force` | چرخاندن secretها |
-| `--skip-opencode` / `--skip-database` | رد کردن گام‌های انتخابی |
+| `--yes` | No questions, all defaults |
+| `--global-assets` | Copy skills/commands into `~/.config/opencode/` |
+| `--force` | Rotate secrets |
+| `--skip-opencode` / `--skip-database` | Skip selected steps |
 
-### `opencode_setup.py` — کانفیگ opencode
+### `opencode_setup.py` — opencode config
 
-`opencode.jsonc` را اعتبارسنجی می‌کند (و اگر خراب باشد با نگه‌داشتن backup
-بازسازی می‌کند) و در صورت درخواست، اسکیل‌ها و کامندهای پروژه را در
-`~/.config/opencode/` نصب می‌کند.
+Validates `opencode.jsonc` (and rebuilds it with a backup kept if it is broken) and,
+on request, installs the project's skills and commands into `~/.config/opencode/`.
 
 ```bash
-uv run python scripts/opencode_setup.py            # فقط بررسی پروژه
-uv run python scripts/opencode_setup.py --global   # + نصب سراسری
+uv run python scripts/opencode_setup.py            # project check only
+uv run python scripts/opencode_setup.py --global   # + global install
 ```
 
-> دارایی‌های opencode در پوشهٔ `.opencode/` پروژه هستند و چون opencode پوشهٔ
-> `.opencode/` را خودکار می‌خواند، به‌صورت پروژه‌محور هم بدون نصب کار می‌کنند.
+> The opencode assets live in the project's `.opencode/` folder and opencode reads
+> `.opencode/` automatically, so they work project-scoped with no install at all.
 
-### `setup_env.py` — ساخت خودکار `.env`
+### `setup_env.py` — automatic `.env` builder
 
-مسئله: `.env.example` حدود ۸۳ کلید دارد که بیشترشان خالی‌اند و پر کردن دستی‌شان
-وقت‌گیر و خطاپذیر است. این اسکریپت آن‌ها را در سه لایه پر می‌کند:
+The problem: `.env.example` has about 83 keys, most of them empty, and filling them by
+hand is slow and error-prone. This script fills them in three layers:
 
-| لایه | مثال | رفتار |
+| Layer | Example | Behavior |
 |---|---|---|
-| **تولیدی** | `REDIS_PASSWORD`, `JWT_HASH_FINGERPRINT`, `SECURITY_ADMIN_PASSWORD` | مقدار تصادفی امن تولید می‌شود |
-| **مشتق‌شده** | `APPLICATION_TABLE_PREFIX`, `POSTGRESQL_DATABASE`, `REDIS_KEY_PREFIX`, `LOGS_NAME` | از نام پروژه (slug) ساخته می‌شود |
-| **حفظ‌شده** | هر کلیدی که قبلاً مقدار دارد | دست‌نخورده می‌ماند |
+| **Generated** | `REDIS_PASSWORD`, `JWT_HASH_FINGERPRINT`, `SECURITY_ADMIN_PASSWORD` | A secure random value is generated |
+| **Derived** | `APPLICATION_TABLE_PREFIX`, `POSTGRESQL_DATABASE`, `REDIS_KEY_PREFIX`, `LOGS_NAME` | Built from the project name (slug) |
+| **Preserved** | Any key that already has a value | Left untouched |
 
-ویژگی‌های مهم:
+Important behaviors:
 
-- **Idempotent:** اجرای دوباره پسورد زندهٔ دیتابیس را نمی‌چرخاند.
-- **تشخیص پورت آزاد:** اگر ۸۰۰۰/۵۴۳۲/۶۳۷۹ اشغال باشد، پورت آزاد بعدی را خودکار
-  انتخاب می‌کند و `APPLICATION_URL`/`JWT_ISSUER` را با آن هم‌گام می‌کند.
-- **`--force`:** چرخاندن اجباری secretها.
+- **Idempotent:** re-running does not rotate the live database password.
+- **Free-port detection:** if 8000/5432/6379 is taken, the next free port is picked
+  automatically and `APPLICATION_URL`/`JWT_ISSUER` are synced with it.
+- **`--force`:** forcibly rotate secrets.
 
 ```bash
-# تعاملی
+# interactive
 uv run python scripts/setup_env.py
 
-# بدون سؤال
+# no questions
 uv run python scripts/setup_env.py --yes --project "Acme CRM" --admin-email a@b.io
 
-# فقط بررسی
+# check only
 uv run python scripts/setup_env.py --check
 ```
 
-| آرگومان | کار |
+| Argument | What it does |
 |---|---|
-| `--project` | نام پروژه (slug) |
-| `--title` | بازنویسی `APPLICATION_TITLE` |
-| `--host` | هاست برای ساخت URLها (پیش‌فرض `localhost`) |
+| `--project` | Project name (slug) |
+| `--title` | Override `APPLICATION_TITLE` |
+| `--host` | Host used to build URLs (default `localhost`) |
 | `--environment` | `development` \| `homolog` \| `production` |
 | `--cookie-samesite` | `lax` \| `strict` \| `none` |
-| `--admin-email` | ایمیل ادمین (بدون پرسیدن) |
-| `--admin-password` | پسورد ادمین (بدون پرسیدن) |
-| `--contact-phone` | تلفن تماس OpenAPI |
-| `--yes` | بدون هیچ پرسشی |
-| `--force` | چرخاندن secretها حتی اگر مقدار دارند |
-| `--check` | فقط گزارش کمبودها |
+| `--admin-email` | Admin email (no prompt) |
+| `--admin-password` | Admin password (no prompt) |
+| `--contact-phone` | OpenAPI contact phone |
+| `--yes` | Never prompt |
+| `--force` | Rotate secrets even when they already have values |
+| `--check` | Only report missing keys |
 
-### `provision.py` — ساخت دیتابیس، ادمین و توکن‌ها
+### `provision.py` — database, admin and tokens
 
-به ترتیب وابستگی اجرا می‌کند و هر گام idempotent است:
+Runs in dependency order and every step is idempotent:
 
 ```
 role + database  →  migrations  →  admin user
 redis check
 ```
 
-- **PostgreSQL:** اگر role یا database نباشد، با `sudo -u postgres psql` می‌سازد.
-  روی لینوکس این مسیر معمولاً لازم است چون `pg_hba.conf` برای superuser احراز
-  `peer` می‌گذارد و ورود با پسورد روی TCP را رد می‌کند. اگر sudo رمز بخواهد و
-  ترمینال تعاملی نباشد، دستورهای آماده چاپ می‌شوند.
-- **Redis:** اتصال با پسورد `.env` را بررسی می‌کند (never-fail؛ فقط هشدار).
+- **PostgreSQL:** if the role or database is missing, it creates them via `sudo -u postgres psql`.
+  On Linux this path is usually required because `pg_hba.conf` sets `peer` auth for the
+  superuser and rejects TCP password login. If sudo needs a password and the terminal
+  is not interactive, ready-to-run commands are printed.
+- **Redis:** checks the connection with the `.env` password (never-fail; warning only).
 - **Migrations:** `alembic upgrade head`.
-- **Admin:** کاربر با نقش `ADMIN` و پسورد هش‌شدهٔ Argon2 می‌سازد.
+- **Admin:** creates a user with the `ADMIN` role and an Argon2-hashed password.
 
 ```bash
-uv run python scripts/provision.py                 # همه‌چیز
-uv run python scripts/provision.py --check         # فقط وضعیت
-uv run python scripts/provision.py --skip-redis    # رد کردن Redis
+uv run python scripts/provision.py                 # everything
+uv run python scripts/provision.py --check         # status only
+uv run python scripts/provision.py --skip-redis    # skip Redis
 uv run python scripts/provision.py --skip-migrations
 uv run python scripts/provision.py --skip-admin
 uv run python scripts/provision.py --admin-name "Sara Ahmadi"
 ```
 
-### `doctor.py` — بررسی سلامت (فقط-خواندن)
+### `doctor.py` — health check (read-only)
 
-هیچ‌چیز نمی‌سازد و هیچ‌چیز را تغییر نمی‌دهد. بررسی می‌کند:
+Builds nothing and changes nothing. It checks:
 
-- `.env` کامل و معتبر باشد
-- PostgreSQL و Redis در دسترس باشند
-- کلیدهای JWT وجود داشته باشند
-- role/database ساخته شده باشند
-- کاربر ادمین seed شده باشد
+- `.env` is complete and valid
+- PostgreSQL and Redis are reachable
+- JWT keys exist
+- role/database have been created
+- the admin user has been seeded
 
 ```bash
 make doctor
-# یا
+# or
 uv run python scripts/doctor.py
 ```
 
-کد خروجی ۱ اگر هر بررسی شکست بخورد — مناسب CI.
+Exit code 1 if any check fails — CI-friendly.
 
-### `rebrand.py` — تغییر نام template
+### `rebrand.py` — rename the template
 
-نام template در چهار شکل hardcode شده: slug خط‌تیره (Docker)، slug زیرخط (نام
-جدول‌ها)، نام نمایشی Title Case و اطلاعات تماس نویسنده. این اسکریپت هر چهار شکل
-را به‌همراه نام پکیج در `pyproject.toml` جایگزین می‌کند.
+The template name is hardcoded in four flavors: the dashed slug (Docker), the underscored
+slug (table names), the Title Case display name, and the author contact details. This
+script replaces all four, plus the package name in `pyproject.toml`.
 
 ```bash
-# نمایش تغییرات بدون نوشتن
+# show changes without writing
 uv run python scripts/rebrand.py "Acme CRM" --dry-run
 
-# اعمال
+# apply
 uv run python scripts/rebrand.py "Acme CRM" \
-  --author "نام شما" --email "you@acme.io" --url "https://acme.io"
+  --author "Your Name" --email "you@acme.io" --url "https://acme.io"
 
-# نوشتن مستندات هم (README و docs) با --docs
+# also rewrite docs (README and markdown)
 uv run python scripts/rebrand.py "Acme CRM" --docs
 ```
 
-| آرگومان | کار |
+| Argument | What it does |
 |---|---|
-| `--author` / `--email` / `--url` | اطلاعات تماس |
-| `--docs` | بازنویسی README و markdownها هم |
-| `--dry-run` | فقط نمایش، بدون نوشتن |
+| `--author` / `--email` / `--url` | Contact details |
+| `--docs` | Also rewrite README and markdown files |
+| `--dry-run` | Show only, do not write |
 
-> به‌طور پیش‌فرض `README.md` دست‌نخورده می‌ماند چون حاوی توضیحات معماری است که
-> می‌خواهی نگه داری. با `--docs` آن‌ها را هم بازنویسی کن.
+> By default `README.md` is left untouched because it holds the architecture docs you
+> want to keep. Rewrite those too with `--docs`.
 
-### `create_module.py` — ساخت اسکلت ماژول
+### `create_module.py` — module scaffolding
 
 ```bash
 uv run python scripts/create_module.py
 ```
 
-نام ماژول را می‌پرسد و ساختار کامل چهارلایه را می‌سازد (فایل‌های لازم + پوشهٔ
-تست).
+Asks for the module name and builds the full four-layer structure (the needed files +
+the test folder).
 
-### سایر اسکریپت‌ها
+### Other scripts
 
-| اسکریپت | کار |
+| Script | What it does |
 |---|---|
-| `generate_secret.py` | یک secret هگز ۳۲ بایتی چاپ می‌کند |
-| `generate_fernet.py` | یک کلید Fernet چاپ می‌کند |
-| `directory_tree.py` | درخت پروژه را در `scripts/directory_tree.txt` می‌نویسد |
-| `websocket_test.html` | کلاینت WebSocket مرورگری (در `development` روی `/devtools/`) |
-| `asyncapi.yaml` | مشخصات AsyncAPI برای کانال WebSocket |
+| `generate_secret.py` | Prints a 32-byte hex secret |
+| `generate_fernet.py` | Prints a Fernet key |
+| `directory_tree.py` | Writes the project tree into `scripts/directory_tree.txt` |
+| `websocket_test.html` | Browser WebSocket client (served on `/devtools/` in `development`) |
+| `asyncapi.yaml` | AsyncAPI spec for the WebSocket channel |
 
 ---
 
-## ابزارهای opencode (اسکیل‌ها و ایجنت‌ها)
+## opencode tools (skills and agents)
 
-پروژه یک بسته‌ی اسکیل و ایجنت همراه دارد که در `.opencode/` قرار می‌گیرند و
-opencode خودکار می‌خواند. برای نصب سراسری در همهٔ پروژه‌ها:
+The project ships a skill and agent bundle that lives in `.opencode/` and opencode reads
+automatically. To install globally for all projects:
 
 ```bash
-make opencode      # کپی در ~/.config/opencode/
+make opencode      # copy into ~/.config/opencode/
 ```
 
-### اسکیل‌ها
+### Skills
 
-| اسکیل | کار |
+| Skill | What it does |
 |---|---|
-| `software-design-document` | نوشتن سند جامع طراحی نرم‌افزار (قالب، قواعد معماری، قراردادها) |
-| `backend-development` | پیاده‌سازی کد مطابق معماری: دستور هر لایه، الگوهای خطا، تراکنش، نام‌گذاری |
+| `software-design-document` | Writing the software design document (template, architecture rules, contracts) |
+| `backend-development` | Implementing code per the architecture: per-layer recipes, error patterns, transactions, naming |
 
-هر اسکیل یک `SKILL.md` کوتاه است و جزئیات در `references/` کنارش می‌آید
+Each skill is a short `SKILL.md` with the details next to it in `references/`
 (progressive disclosure).
 
-### ایجنت‌ها
+### Agents
 
-| ایجنت | نقش | دسترسی |
+| Agent | Role | Access |
 |---|---|---|
-| `sdd-writer` | نوشتن سند جامع طراحی (`docs/sdd.md`)، بدون کد | ویرایش آزاد |
-| `code-explorer` | آنالیز و کاوش کدبیس: معماری، جریان، blast radius | فقط-خواندن |
-| `backend-developer` | پیاده‌سازی کد بک‌اند (ماژول، use case، repository، router) | ویرایش آزاد |
-| `code-auditor` | بازبینی کد و تطبیق با قوانین/اسکیل‌ها؛ گزارش انحراف | فقط-خواندن |
+| `sdd-writer` | Writes the software design document (`docs/sdd.md`), no code | Free edit |
+| `code-explorer` | Codebase analysis and exploration: architecture, flow, blast radius | Read-only |
+| `backend-developer` | Backend implementation (module, use case, repository, router) | Free edit |
+| `code-auditor` | Reviews code against the rules/skills; reports deviations | Read-only |
 
-### کامندها
+### Commands
 
-هر کامند یکی از ایجنت‌ها را در یک **دامنهٔ مشخص** صدا می‌زند. متن بعد از نام کامند
-به‌عنوان آرگومان به ایجنت می‌رسد (اگر خالی بماند، خودش می‌پرسد).
+Each command invokes one of the agents in a **specific scope**. The text after the
+command name reaches the agent as its argument (if empty, it asks).
 
-| خانواده | ایجنت | فایل | ماژول | لایه (همهٔ ماژول‌ها) | همهٔ ماژول‌ها |
+| Family | Agent | File | Module | Layer (all modules) | All modules |
 |---|---|---|---|---|---|
 | `audit-*` | code-auditor | `/audit-file <path>` | `/audit-module <module>` | `/audit-layer <layer>` | `/audit-all` |
 | `explore-*` | code-explorer | `/explore-file <path>` | `/explore-module <module>` | `/explore-layer <layer>` | `/explore-all` |
 | `develop-*` | backend-developer | `/develop-file <path>` | `/develop-module <module>` | `/develop-layer <layer>` | `/develop-all` |
 | `design-*` | sdd-writer | `/design-file <part>` | `/design-module <module>` | `/design-layer <concern>` | `/design-all` |
 
-- `<layer>` یکی از `domain` \| `application` \| `infrastructure` \| `presentation`.
-- کامندهای `audit-*` و `explore-*` به‌صورت **subtask** اجرا می‌شوند: در یک نشست
-  جدا انجام و نتیجه خلاصه برمی‌گردد، تا کانتکست اصلی شلوغ نشود.
-- کامندهای `develop-*` و `design-*` در همان نشست اجرا می‌شوند تا تعاملی بمانند.
+- `<layer>` is one of `domain` \| `application` \| `infrastructure` \| `presentation`.
+- `audit-*` and `explore-*` run as **subtasks**: they execute in an isolated session and
+  the summary comes back, so the main context stays clean.
+- `develop-*` and `design-*` run in the same session to stay interactive.
 
-پس از تغییر این بسته، opencode را **quit و restart** کن تا لود شود.
+After changing this bundle, **quit and restart** opencode so it loads.
 
 ---
 
-## معماری
+## Architecture
 
-هر ماژول به چهار لایه تقسیم می‌شود. وابستگی‌ها **فقط به سمت داخل** است — دامنه
-هیچ‌چیز بیرونی را نمی‌شناسد.
+Every module is split into four layers. Dependencies point **inward only** — the domain
+knows nothing outside itself.
 
 ```mermaid
 flowchart TB
@@ -488,18 +506,18 @@ flowchart TB
     style SHARED fill:#7f5539,stroke:#582f0e,color:#fff
 ```
 
-| لایه | پوشه | محتوا | مجاز به import |
+| Layer | Folder | Contents | May import |
 |---|---|---|---|
-| **Domain** | `domain/` | `entities.py`, `value_objects.py`, `enums.py` | فقط `shared`. **بدون** FastAPI، SQLAlchemy، Pydantic |
+| **Domain** | `domain/` | `entities.py`, `value_objects.py`, `enums.py` | Only `shared`. **No** FastAPI, SQLAlchemy, Pydantic |
 | **Application** | `application/` | `use_cases.py`, `interfaces.py`, `mappers.py`, `exceptions.py`, `utils.py` | `domain`, `shared` |
 | **Infrastructure** | `infrastructure/` | `models.py`, `repositories.py`, `caches.py`, `services.py` | `domain`, `application`, `core` |
-| **Presentation** | `presentation/` | `routers.py`, `schemas.py`, `docs.py`, `dependencies.py` | همه‌چیز زیر خودش |
+| **Presentation** | `presentation/` | `routers.py`, `schemas.py`, `docs.py`, `dependencies.py` | Everything below it |
 
-لایهٔ application به قراردادهای `typing.Protocol` وابسته است، هرگز به کلاس‌های
-عینی. همین است که یک use case را با fake درون‌حافظه‌ای تست‌پذیر می‌کند و اجازه
-می‌دهد PostgreSQL را بدون لمس منطق کسب‌وکار عوض کنی.
+The application layer depends on `typing.Protocol` contracts, never on concrete classes.
+That is what makes a use case testable with an in-memory fake and lets you swap
+PostgreSQL without touching business logic.
 
-### چرخهٔ عمر یک درخواست
+### Request lifecycle
 
 ```mermaid
 sequenceDiagram
@@ -538,68 +556,67 @@ sequenceDiagram
     MW-->>C: JSON response
 ```
 
-هندلرها هرگز پوشش پاسخ را نمی‌سازند — `ResponseFormattingMiddleware` این کار را
-می‌کند. هندلرها هرگز منطق کسب‌وکار ندارند — use case این کار را می‌کند. بدنهٔ هر
-هندلر دقیقاً `payload → mapper → use case → mapper → return` است.
+Handlers never build the response envelope — `ResponseFormattingMiddleware` does that.
+Handlers never hold business logic — the use case does that. Every handler body is
+exactly `payload → mapper → use case → mapper → return`.
 
-### ماژول‌ها
+### Modules
 
 ```text
 app/modules/
-├── shared/           انواع پایه — route ندارد
-├── authentication/   ورود، refresh، خروج؛ صدور JWT تودرتو
-├── user/             حساب‌ها و نقش‌ها
-├── key/              کلیدهای API — کامل‌ترین ماژول (مرجع)
-├── knowledge/        CRUD + اعلان broadcast (مرجع)
-├── notification/     per-user و fan-out بر اساس نقش
-├── websocket/        تحویل بلادرنگ
-├── health/           liveness و نسخهٔ Alembic
-└── example/          ماژول مرجع حداقلی، بدون persistence
+├── shared/           base types — no routes
+├── authentication/   login, refresh, logout; nested JWT issuance
+├── user/             accounts and roles
+├── key/              API keys — the most complete module (reference)
+├── knowledge/        CRUD + broadcast notification (reference)
+├── notification/     per-user and role-based fan-out
+├── websocket/        realtime delivery
+├── health/           liveness and Alembic version
+└── example/          minimal reference module, no persistence
 ```
 
-> وقتی الگویی مبهم است، **`key`** را بخوان. تنها ماژولی است که هر لایه را تمرین
-> می‌کند: کش با tombstone، سرویس، CRUD کامل، و مدیریت secret گذرا.
+> When a pattern is ambiguous, read **`key`**. It is the only module that exercises
+> every layer: tombstone cache, a service, full CRUD, and transient secret handling.
 
 ---
 
-## ساختار یک ماژول
+## Module structure
 
 ```text
 app/modules/{module}/
 ├── domain/
-│   ├── entities.py          dataclassهایی که از BaseEntity ارث می‌برند؛ اعتبارسنجی در __post_init__
-│   ├── value_objects.py     کلاس‌های ساده: _normalize → _validate → __str__ → __eq__
-│   └── enums.py             enumهای ماژول، همیشه (str, Enum)
+│   ├── entities.py          dataclasses extending BaseEntity; validation in __post_init__
+│   ├── value_objects.py     plain classes: _normalize → _validate → __str__ → __eq__
+│   └── enums.py             module enums, always (str, Enum)
 ├── application/
-│   ├── interfaces.py        قراردادهای Protocol: I{Entity}Repository / Cache / Service
-│   ├── use_cases.py         یک کلاس {Module}UseCases؛ قوانین کسب‌وکار اینجا
+│   ├── interfaces.py        Protocol contracts: I{Entity}Repository / Cache / Service
+│   ├── use_cases.py         one {Module}UseCases class; business rules live here
 │   ├── mappers.py           ENTITY/DTOS · ENTITY/MODELS · ENTITY/CACHE
-│   ├── exceptions.py        {Module}Exception عمومی + یکی per قاعدهٔ کسب‌وکار
-│   └── utils.py             کمک‌کننده‌های محلی ماژول
+│   ├── exceptions.py        generic {Module}Exception + one per business rule
+│   └── utils.py             module-local helpers
 ├── infrastructure/
-│   ├── models.py            مدل‌های SQLAlchemy که از BaseModel ارث می‌برند
-│   ├── repositories.py      Postgres{Entity}Repository — flush()، هرگز commit()
-│   ├── caches.py            Redis{Entity}Cache — نام‌فضادار، tombstone، never-raise
-│   └── services.py          سیستم‌های بیرونی یا stateful پشت Protocol
+│   ├── models.py            SQLAlchemy models extending BaseModel
+│   ├── repositories.py      Postgres{Entity}Repository — flush(), never commit()
+│   ├── caches.py            Redis{Entity}Cache — namespaced, tombstone, never-raise
+│   └── services.py          external or stateful systems behind a Protocol
 └── presentation/
-    ├── routers.py           هندلرها: payload → mapper → use case → mapper → return
-    ├── schemas.py           Pydantic v2 با Field و ConfigDict کامل
-    ├── docs.py              router_docs + یک {action}_docs per endpoint
-    └── dependencies.py      کارخانه‌های Depends، با برگرداندن نوع Protocol
+    ├── routers.py           handlers: payload → mapper → use case → mapper → return
+    ├── schemas.py           Pydantic v2 with full Field and ConfigDict
+    ├── docs.py              router_docs + one {action}_docs per endpoint
+    └── dependencies.py      Depends factories, returning the Protocol type
 ```
 
-فایل‌های خالی طبیعی‌اند. یک ماژول اسکلت کامل را نگه می‌دارد حتی وقتی یک فایل
-استفاده نمی‌شود — یک `caches.py` خالی یعنی «این ماژول کش ندارد»، نه «کسی فایل را
-فراموش کرده».
+Empty files are normal. A module keeps the full skeleton even when a file is unused —
+an empty `caches.py` means "this module has no cache", not "someone forgot a file".
 
-`scripts/create_module.py` دقیقاً همین درخت را می‌سازد.
+`scripts/create_module.py` builds exactly this tree.
 
-### قواعد نام‌گذاری
+### Naming rules
 
-| مفهوم | الگو | مثال |
+| Concept | Pattern | Example |
 |---|---|---|
-| ماژول | snake_case مفرد | `knowledge` |
-| Entity | PascalCase بدون پسوند | `Knowledge` |
+| Module | singular snake_case | `knowledge` |
+| Entity | PascalCase, no suffix | `Knowledge` |
 | Enum | PascalCase + Status/Type/Role | `Role` |
 | Domain Error | PascalCase + Error | `KnowledgeNotFoundError` |
 | Interface | `I` + PascalCase + Repository/Service | `IKnowledgeRepository` |
@@ -607,17 +624,18 @@ app/modules/{module}/
 | Model | PascalCase + Model | `KnowledgeModel` |
 | Repository | `Postgres` + PascalCase + Repository | `PostgresKnowledgeRepository` |
 | Cache | `Redis` + PascalCase + Cache | `RedisKnowledgeCache` |
-| Router | متغیر `router` | `router = APIRouter(**router_docs)` |
+| Router | `router` variable | `router = APIRouter(**router_docs)` |
 | Table | `{prefix}_{plural_snake}` | `acme_crm_knowledges` |
-| Constraint | `uq_/ix_/ck_/fk_` + نام جدول | `uq_knowledges_name` |
+| Constraint | `uq_/ix_/ck_/fk_` + table name | `uq_knowledges_name` |
 
 ---
 
-## الگوهای خطا
+## Error patterns
 
-سه شکل، یکی per نوع لایه. اشتباه در این مورد پرهزینه‌ترین خطای کدبیس است.
+Three shapes, one per layer kind. Getting this wrong is the most expensive mistake in
+the codebase.
 
-**3-branch** — use caseها و هندلرهای router:
+**3-branch** — use cases and router handlers:
 
 ```python
 except StandardException:
@@ -629,8 +647,8 @@ except Exception as e:
     raise KnowledgeException()
 ```
 
-**2-branch** — repositoryها و serviceها. شاخهٔ `DomainError` ندارند: این لایه‌ها
-هرگز قوانین دامنه را ارزیابی نمی‌کنند.
+**2-branch** — repositories and services. No `DomainError` branch: these layers never
+evaluate domain rules.
 
 ```python
 except StandardException:
@@ -640,7 +658,7 @@ except Exception as e:
     raise KnowledgeException()
 ```
 
-**Never-raise** — cacheها. هر متد catch می‌کند، log می‌کند و `None` برمی‌گرداند.
+**Never-raise** — caches. Every method catches, logs and returns `None`.
 
 ```python
 except Exception as e:
@@ -651,168 +669,163 @@ except Exception as e:
 ```
 
 > [!WARNING]
-> `except StandardException` **باید اول بیاید**. `StandardException` از
-> `HTTPException` ارث می‌برد، پس هر ترتیب دیگری هر ۴۰۴ و ۴۰۹ عمدی را در ۵۰۰
-> می‌بلعد.
+> `except StandardException` **must come first**. `StandardException` inherits from
+> `HTTPException`, so any other order swallows every deliberate 404 and 409 into a 500.
 
-یک خطای cache به دیتابیس تنزل می‌کند و هرگز نباید درخواست را fail کند — به همین
-دلیل شکل cache هیچ شاخهٔ re-raise ندارد.
+A cache failure degrades to the database and must never fail the request — that is why
+the cache shape has no re-raise branch.
 
 ---
 
-## تست
+## Tests
 
-سیاست **unit-first** است: use caseها را با fake درون‌حافظه‌ای از Protocolهایشان
-می‌رانیم، entityها را مستقیم می‌سازیم و به هیچ دیتابیس، Redis یا شبکه دست
-نمی‌زنیم.
+The policy is **unit-first**: drive use cases with in-memory fakes of their Protocols,
+construct entities directly, and touch no real database, Redis or network.
 
 ```bash
-make test          # اجرای کل تست‌ها
-make test-watch    # اجرای مجدد خودکار با تغییر فایل‌ها
+make test          # run the whole suite
+make test-watch    # auto re-run on file changes
 ```
 
-ساختار:
+Structure:
 
 ```text
 test/
-├── fakes.py                         fakeهای درون‌حافظه‌ای برای همهٔ Portها
+├── fakes.py                         in-memory fakes for all Ports
 ├── core/
 └── modules/
     └── knowledge/
-        ├── test_domain.py           تست لایهٔ دامنه (خالص)
-        └── test_use_cases.py        تست use case با fake
+        ├── test_domain.py           pure domain-layer tests
+        └── test_use_cases.py        use-case tests with fakes
 ```
 
-### نوشتن تست برای ماژول جدید
+### Writing tests for a new module
 
-1. اگر ماژولت Port جدید دارد، fake آن را در `test/fakes.py` اضافه کن.
-2. تست دامنه: entity/value object را مستقیم بساز و قواعد را بسنج.
-3. تست use case: fake را تزریق کن و رفتار و قوانین کسب‌وکار را بسنج.
+1. If your module brings a new Port, add its fake to `test/fakes.py`.
+2. Domain test: build the entity/value object directly and assert the rules.
+3. Use-case test: inject the fake and assert behavior and business rules.
 
 ```python
-# نمونهٔ تست use case با fake
+# sample use-case test with a fake
 async def test_rejects_duplicate_name(use_cases, manager):
     await use_cases.create(Knowledge(name="Duplicate", created_by=manager))
     with pytest.raises(KnowledgeNameAlreadyExistsException):
         await use_cases.create(Knowledge(name="Duplicate", created_by=manager))
 ```
 
-`pytest` و `pytest-asyncio` از قبل پیکربندی شده‌اند (`asyncio_mode = "auto"`).
+`pytest` and `pytest-asyncio` are preconfigured (`asyncio_mode = "auto"`).
 
 ---
 
-## پیکربندی (.env)
+## Configuration (.env)
 
-هر تنظیم یک فیلد تایپ‌دار روی `Settings` در `app/core/settings.py` است که با
-pydantic-settings از `.env` خوانده می‌شود. همیشه از singleton `settings` استفاده
-کن — هرگز `os.environ`.
+Every setting is a typed field on `Settings` in `app/core/settings.py`, read from
+`.env` by pydantic-settings. Always use the `settings` singleton — never `os.environ`.
 
 > [!IMPORTANT]
-> بیشتر فیلدها **اجباری**اند. یک مقدار خالی `ValidationError` می‌دهد که نام کلید
-> را در استارت چاپ می‌کند. این عمدی است: یک default خاموش که بین محیط‌ها فرق کند
-> خیلی سخت‌تر از یک شکست در استارت دیباگ می‌شود.
+> Most fields are **required**. An empty value raises a `ValidationError` naming the key
+> at startup. This is deliberate: a silent default that differs between environments is
+> far harder to debug than a startup failure.
 
-### گروه‌های کلیدها
+### Key groups
 
-| گروه | تعداد | نمونه |
+| Group | Count | Sample |
 |---|---|---|
-| APPLICATION | ۱۳ | `APPLICATION_TITLE`, `APPLICATION_PORT`, `APPLICATION_TABLE_PREFIX` |
-| API KEY | ۳ | `API_KEY_PREFIX`, `API_KEY_HASH_FINGERPRINT` |
-| AUTH | ۵ | نام و توضیح schemeها |
-| COOKIES | ۹ | `COOKIES_ACCESS_TOKEN_KEY`, `COOKIES_SAME_SITE` |
-| JWT | ۱۳ | `JWT_ISSUER`, `JWT_ACCESS_TOKEN_EXPIRE_MINUTES`, مسیر کلیدها |
-| LOGS | ۵ | `LOGS_LEVEL`, `LOGS_NAME` |
-| POSTGRESQL | ۵ | `POSTGRESQL_DATABASE`, `POSTGRESQL_HOST` |
-| PGADMIN | ۳ | اطلاعات ورود pgAdmin (فقط Compose) |
-| REDIS | ۱۸ | `REDIS_PASSWORD`, `REDIS_DEFAULT_TTL_SECONDS` |
-| REDISINSIGHT | ۲ | فقط Compose |
-| NGROK | ۱ | توکن اختیاری تونل در `development` |
-| SECURITY | ۶ | `SECURITY_ALLOW_ORIGINS`, `SECURITY_ADMIN_EMAIL` |
+| APPLICATION | 13 | `APPLICATION_TITLE`, `APPLICATION_PORT`, `APPLICATION_TABLE_PREFIX` |
+| API KEY | 3 | `API_KEY_PREFIX`, `API_KEY_HASH_FINGERPRINT` |
+| AUTH | 5 | Scheme names and descriptions |
+| COOKIES | 9 | `COOKIES_ACCESS_TOKEN_KEY`, `COOKIES_SAME_SITE` |
+| JWT | 13 | `JWT_ISSUER`, `JWT_ACCESS_TOKEN_EXPIRE_MINUTES`, key paths |
+| LOGS | 5 | `LOGS_LEVEL`, `LOGS_NAME` |
+| POSTGRESQL | 5 | `POSTGRESQL_DATABASE`, `POSTGRESQL_HOST` |
+| PGADMIN | 3 | pgAdmin login (Compose only) |
+| REDIS | 18 | `REDIS_PASSWORD`, `REDIS_DEFAULT_TTL_SECONDS` |
+| REDISINSIGHT | 2 | Compose only |
+| NGROK | 1 | Optional tunnel token in `development` |
+| SECURITY | 6 | `SECURITY_ALLOW_ORIGINS`, `SECURITY_ADMIN_EMAIL` |
 
-### مقادیر مشتق‌شده (computed)
+### Computed values
 
-این‌ها از کلیدهای بالا محاسبه می‌شوند و نباید مستقیم ست شوند:
+These are derived from the keys above and must not be set directly:
 
-| ویژگی | مشتق از |
+| Property | Derived from |
 |---|---|
-| `POSTGRESQL_DATABASE_URL` / `_ASYNC_DATABASE_URL` | گروه `POSTGRESQL_*` |
-| `REDIS_URL` | گروه `REDIS_*` |
+| `POSTGRESQL_DATABASE_URL` / `_ASYNC_DATABASE_URL` | The `POSTGRESQL_*` group |
+| `REDIS_URL` | The `REDIS_*` connection group |
 | `REDIS_NAMESPACE` | `REDIS_KEY_PREFIX` + `REDIS_CACHE_VERSION` |
-| `JWT_SIGNING_*_KEY`, `JWT_ENCRYPTION_*_KEY` | فایل‌های PEM روی دیسک |
-| `SECURITY_*_ALLOWED_PATHS` | قواعد مسیر per-tier |
+| `JWT_SIGNING_*_KEY`, `JWT_ENCRYPTION_*_KEY` | The PEM files on disk |
+| `SECURITY_*_ALLOWED_PATHS` | The per-tier path rules |
 | `COOKIES_ACCESS_TOKEN_MAX_AGE` | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES × 60` |
 
-> انقضای JWT را ست کن، نه عمر کوکی را — عمر کوکی تبعیت می‌کند.
+> Set the JWT expiry, not the cookie age — the cookie age follows.
 
-### محیط‌ها
+### Environments
 
-`APPLICATION_ENVIRONMENT`: یکی از `development` | `homolog` | `production`.
+`APPLICATION_ENVIRONMENT`: one of `development` | `homolog` | `production`.
 
-- در `development`: مستندات (`/docs`, `/redoc`) فعال، ابزارهای توسعه روی
-  `/devtools/` mount می‌شوند و ngrok اجرا می‌شود.
-- در `production`: مستندات خاموش و ngrok غیرفعال.
+- In `development`: docs (`/docs`, `/redoc`) are on, dev tools mount on `/devtools/`,
+  and ngrok runs.
+- In `production`: docs off, ngrok disabled.
 
 ---
 
-## پایگاه داده و مهاجرت
+## Database and migrations
 
-### جدول‌ها
+### Tables
 
-جدول‌ها پیشوند `APPLICATION_TABLE_PREFIX` دارند، پس با پیش‌فرض `acme_crm` جدول
-کاربران می‌شود `acme_crm_users`. مهاجرت‌ها هم از همین تنظیم می‌خوانند، پس نام
-جدول‌ها بین مدل‌ها، مهاجرت‌ها و دیتابیس همیشه یکسان است.
+Tables carry the `APPLICATION_TABLE_PREFIX` prefix, so with the `acme_crm` prefix the
+users table becomes `acme_crm_users`. Migrations read the same setting, so table names
+always match between models, migrations and the database.
 
-### قراردادها
+### Conventions
 
-| مفهوم | قاعده | مثال |
+| Concept | Rule | Example |
 |---|---|---|
-| نام جدول | `{prefix}_{plural_snake}` | `acme_crm_keys` |
-| نوع Enum | `{snake}_enum` | `role_enum` |
+| Table name | `{prefix}_{plural_snake}` | `acme_crm_keys` |
+| Enum type | `{snake}_enum` | `role_enum` |
 | Unique | `uq_{plural}_{cols}` | `uq_keys_hashed_key` |
 | Index | `ix_{plural}_{cols}` | `ix_keys_prefix` |
 | Check | `ck_{plural}_{rule}` | `ck_keys_single_owner` |
-| Soft delete | `is_active = false` | هرگز `DELETE` فیزیکی |
+| Soft delete | `is_active = false` | Never a physical `DELETE` |
 
-### مهاجرت‌ها
+### Migrations
 
 ```bash
-make migrate                          # اعمال تا head
-make migration m="create_my_entity"   # ساخت مهاجرت جدید
+make migrate                          # apply up to head
+make migration m="create_my_entity"   # create a new migration
 ```
 
 > [!IMPORTANT]
-> یک مدل جدید باید در `migrations/env.py` import و به لیست `_ = [...]` اضافه شود.
-> autogenerate فقط مدل‌های ثبت‌شده را می‌بیند — و بدتر، برای جدول زنده‌ای که مدلش
-> را نمی‌بیند `drop_table` صادر می‌کند.
+> A new model must be imported in `migrations/env.py` and added to the `_ = [...]` list.
+> Autogenerate only sees registered models — worse, it emits a `drop_table` for a live
+> table whose model it cannot see.
 
-برنامه در استارت `alembic upgrade head` را اجرا می‌کند، پس یک استک تازه خودش را
-مهاجرت می‌دهد.
+The app runs `alembic upgrade head` at startup, so a fresh stack migrates itself.
 
 ---
 
-## امنیت
+## Security
 
-### ورود و نشست
+### Login and sessions
 
-- JWT تودرتو: امضای **JWS** با Ed25519، بسته‌بندی‌شده در **JWE** با
-  ECDH-ES + A256GCM.
-- توکن‌ها در کوکی‌های **HTTP-only** می‌آیند، نه هدر `Authorization`.
-- اثر انگشت HMAC-SHA256 از `jti` هر توکن در دیتابیس ذخیره می‌شود (نه خود توکن)،
-  که توکن‌ها را revocable می‌کند.
-- هش پسورد با **Argon2id**.
+- Nested JWT: **JWS** signature with Ed25519, wrapped in **JWE** with ECDH-ES + A256GCM.
+- Tokens come in **HTTP-only** cookies, not the `Authorization` header.
+- An HMAC-SHA256 fingerprint of each token's `jti` is stored in the database (not the
+  token itself), which makes tokens revocable.
+- Password hashing with **Argon2id**.
 
-### نقش‌ها و دو دروازه
+### Roles and the two gates
 
-| Tier | تنظیم | دسترسی |
+| Tier | Setting | Reaches |
 |---|---|---|
-| Public | `SECURITY_NO_AUTH_PATHS` | همه، حتی ناشناس |
+| Public | `SECURITY_NO_AUTH_PATHS` | Everyone, even anonymous |
 | User | `SECURITY_USER_ALLOWED_PATHS` | Public + user |
 | Manager | `SECURITY_MANAGER_ALLOWED_PATHS` | User + manager |
 | Admin | `SECURITY_ADMIN_ALLOWED_PATHS` | Manager + admin |
-| API key | `SECURITY_API_KEY_ALLOWED_PATHS` | مستقل — فعلاً خالی |
+| API key | `SECURITY_API_KEY_ALLOWED_PATHS` | Independent — currently empty |
 
-هر مسیر **یک بار** در پایین‌ترین tierی که باید به آن برسد تعریف می‌شود. هر دو
-شکل با و بدون اسلش پایانی لازم است:
+Each path is declared **once**, in the lowest tier that should reach it. Both the
+trailing-slash and non-slash forms are required:
 
 ```python
 (_path_rule("/api/v1/key/", "POST"),)
@@ -820,108 +833,109 @@ make migration m="create_my_entity"   # ساخت مهاجرت جدید
 ```
 
 > [!WARNING]
-> فراموش کردن شکل دوم شایع‌ترین علت «در Swagger کار می‌کند، از کلاینت ۴۰۳ می‌دهد» است.
+> Forgetting the second form is the most common cause of "works in Swagger, 403 from
+> the client".
 
-### کلیدهای API
+### API keys
 
-چرخهٔ کامل: create، list، rotate، revoke. کلید خام **فقط یک بار** برگردانده
-می‌شود و هرگز ذخیره نمی‌شود؛ فقط `hashed_key`، `prefix` و `last_four` می‌مانند.
+Full lifecycle: create, list, rotate, revoke. The raw key is returned **exactly once**
+and never stored; only `hashed_key`, `prefix` and `last_four` remain.
 
 ---
 
-## عیب‌یابی
+## Troubleshooting
 
-### `make env-check` می‌گوید کلیدی خالی است
+### `make env-check` says a key is empty
 
 ```bash
-make setup        # پر کردن خودکار
+make setup        # auto-fill
 ```
 
-### `make provision` می‌گوید `sudo needs a password`
+### `make provision` says `sudo needs a password`
 
-روی لینوکس ساخت role/database نیاز به superuser دارد. دستورهای چاپ‌شده را در یک
-ترمینال تعاملی اجرا کن، سپس:
+On Linux, creating the role/database needs the superuser. Run the printed commands in
+an interactive terminal, then:
 
 ```bash
 make provision
 ```
 
-اگر Docker داری و ترجیح می‌دهی از آن استفاده کنی:
+If you have Docker and prefer it:
 
 ```bash
 make dependencies-up-silent
 make provision
 ```
 
-### `Settings` در استارت `ValidationError` می‌دهد
+### `Settings` raises `ValidationError` at startup
 
-کلید نام‌برده‌شده در `.env` خالی است. `make doctor` را بزن تا وضعیت کامل را ببینی.
+The named key is empty in `.env`. Run `make doctor` to see the full status.
 
-### «در Swagger کار می‌کند ولی از کلاینت ۴۰۳ می‌دهد»
+### "Works in Swagger but 403 from the client"
 
-شکل بدون اسلش پایانی مسیر در tier مربوطه ثبت نشده است. هر دو شکل را اضافه کن.
+The non-trailing-slash form of the path is not registered in that tier. Add both forms.
 
-### `greenlet` گم است
+### `greenlet` is missing
 
-`SQLAlchemy[asyncio]` بدون greenlet کار نمی‌کند. این وابستگی در `pyproject.toml`
-هست؛ اگر دستی حذف شده:
+`SQLAlchemy[asyncio]` does not work without greenlet. This dependency is in
+`pyproject.toml`; if it was removed by hand:
 
 ```bash
 uv sync
 ```
 
-### کش باعث دادهٔ اشتباه شده
+### Cache serves stale data
 
-`REDIS_CACHE_VERSION` را bump کن. نسخهٔ قبلی خودش با TTL منقضی می‌شود — این
-واکنش درست به تغییر فرمت payload است، نه flush کردن کش.
-
----
-
-## ارتقاها
-
-این مخزن بر پایهٔ یک قالب آمادهٔ FastAPI + Clean Architecture + DDD بنا شده و روی
-آن این موارد اضافه یا بهبود داده شده است:
-
-- **راه‌اندازی خودکار:** اسکریپت‌های `setup_env`, `provision`, `doctor`,
-  `rebrand`, `create_module` و ویزارد یکپارچهٔ `make install` — نوشتن کامل `.env`،
-  تولید جفت‌کلیدهای JWT، ساخت role و database، اجرای مهاجرت و ساخت کاربر ادمین.
-- **جعبه‌ابزار opencode:** دو اسکیل (`backend-development`،
-  `software-design-document`)، چهار ایجنت و شانزده کامند در `.opencode/` برای
-  توسعه، بازبینی معماری و تولید سند طراحی.
-- **CLI قابل نصب (`fastddd`):** بسته‌بندی اسکریپت‌ها و دارایی‌های opencode در یک
-  wheel آمادهٔ انتشار روی PyPI؛ نصب با `uv tool install` و اجرای همهٔ کارها با یک
-  دستور (`fastddd setup|db|doctor|opencode|new-module|...`).
-- **کیفیت کد:** پیکربندی سخت‌گیرانهٔ Ruff (`E,W,F,I,UP,B,C4,SIM,RET,RUF`)، فرمت
-  خودکار و رفع ایرادها (از جمله `raise ... from`، انتساب‌های اضافه و ترتیب
-  importها).
-- **تست:** پیکربندی `pytest` + `pytest-asyncio` و تست‌های واحد دامنه و use case با
-  fake — بدون نیاز به دیتابیس یا Redis.
+Bump `REDIS_CACHE_VERSION`. The previous generation expires on its own via TTL — this
+is the correct response to a payload-format change, not flushing the cache.
 
 ---
 
-## تقدیر
+## Enhancements
 
-این پروژه بر پایهٔ کار **Bruno Tanabe** ([@BrunoTanabe](https://github.com/BrunoTanabe))
-ساخته شده است. معماری تمیز، لایه‌بندی و الگوهای اولیه حاصل کار ایشان است؛ از
-ایشان سپاسگزاریم.
+This repo is built on a ready-made FastAPI + Clean Architecture + DDD template, with
+the following added or improved on top:
+
+- **Automatic setup:** the `setup_env`, `provision`, `doctor`, `rebrand` and
+  `create_module` scripts plus the all-in-one `make install` wizard — full `.env`
+  writing, JWT key-pair generation, role and database creation, migration runs and
+  admin-user seeding.
+- **opencode toolkit:** two skills (`backend-development`, `software-design-document`),
+  four agents and sixteen commands under `.opencode/` for development, architecture
+  review and design-doc generation.
+- **Installable CLI (`fastddd`):** the scripts and opencode assets packaged into a
+  PyPI-ready wheel; install with `uv tool install` and run everything with one command
+  (`fastddd setup|db|doctor|opencode|new-module|...`).
+- **Code quality:** a strict Ruff configuration (`E,W,F,I,UP,B,C4,SIM,RET,RUF`),
+  auto-formatting and fixed findings (including `raise ... from`, redundant assignments
+  and import order).
+- **Tests:** `pytest` + `pytest-asyncio` configuration and domain / use-case unit tests
+  with fakes — no database or Redis needed.
 
 ---
 
-## مشارکت
+## Credits
 
-1. از شاخهٔ اصلی branch بگیر.
-2. از کنوانسیون‌ها پیروی کن — بخش [معماری](#معماری) هر الگوی لایه، سه شکل
-   مدیریت خطا و قواعد نام‌گذاری را مستند می‌کند.
-3. قبل از commit: `make lint && make format && make test`.
-4. از [Conventional Commits](https://www.conventionalcommits.org/) استفاده کن:
+This project is built on the work of **Bruno Tanabe** ([@BrunoTanabe](https://github.com/BrunoTanabe)).
+The clean architecture, layering and initial patterns are his; thank you.
+
+---
+
+## Contributing
+
+1. Branch off main.
+2. Follow the conventions — the [Architecture](#architecture) section documents every
+   layer pattern, the three error shapes and the naming rules.
+3. Before committing: `make lint && make format && make test`.
+4. Use [Conventional Commits](https://www.conventionalcommits.org/):
    `feat(knowledge): add export endpoint`.
-5. یک pull request باز کن و توضیح بده چه چیزی و چرا تغییر کرد.
+5. Open a pull request and explain what changed and why.
 
-تازه‌وارد؟ `app/modules/key/` را کامل بخوان. هر لایه و هر الگو را در یک ماژول
-تمرین می‌کند.
+New here? Read `app/modules/key/` end to end. It exercises every layer and every pattern
+in a single module.
 
 ---
 
-## مجوز
+## License
 
-تحت [MIT License](LICENSE) منتشر شده است.
+Released under the [MIT License](LICENSE).
