@@ -892,8 +892,8 @@ uv sync
   `software-design-document`)، چهار ایجنت و شانزده کامند در `.opencode/` برای
   توسعه، بازبینی معماری و تولید سند طراحی.
 - **CLI قابل نصب (`fastddd`):** بسته‌بندی اسکریپت‌ها و دارایی‌های opencode در یک
-  wheel آمادهٔ انتشار روی PyPI؛ نصب با `uv tool install` و اجرای همهٔ کارها با یک
-  دستور (`fastddd setup|db|doctor|opencode|new-module|...`).
+  wheel آمادهٔ انتشار روی PyPI؛ نصب با `pip install .` یا `uv tool install .` و اجرای
+  همهٔ کارها با یک دستور (`fastddd setup|db|doctor|opencode|new-module|...`).
 - **کیفیت کد:** پیکربندی سخت‌گیرانهٔ Ruff (`E,W,F,I,UP,B,C4,SIM,RET,RUF`)، فرمت
   خودکار و رفع ایرادها (از جمله `raise ... from`، انتساب‌های اضافه و ترتیب
   importها).

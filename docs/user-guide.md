@@ -321,14 +321,19 @@ project (positional, مثل 'Acme CRM')
 
 ## ۶. CLI یکپارچهٔ `fastddd`
 
-`fastddd` همان اسکریپت‌های بالا را در یک دستور جمع کرده. سه راه اجرا:
+`fastddd` همان اسکریپت‌های بالا را در یک دستور جمع کرده. چهار راه اجرا:
 
 ```bash
 uv run fastddd <command> [options]   # داخل همین پروژه (توسعه)
-uv tool install .                    # نصب سراسری از روی همین پوشه
-fastddd <command>                    # بعد از نصب سراسری، در هر پروژه‌ای
+pip install .                        # نصب با pip از روی همین پوشه
+uv tool install .                    # نصب سراسری با uv از روی همین پوشه
+fastddd <command>                    # بعد از نصب، در هر پروژه‌ای
 python -m fastddd <command>          # راه جایگزین
 ```
+
+`fastddd` روی PyPI هم قابل انتشار است؛ بعد از انتشار با `pip install clean-architecture`
+یا `uv tool install clean-architecture` نصب می‌شود. برای نصب ویرایشی (توسعهٔ خودِ CLI)
+`pip install -e .` بزن.
 
 فهرست دستورها (`fastddd --help`):
 

@@ -905,8 +905,8 @@ the following added or improved on top:
   four agents and sixteen commands under `.opencode/` for development, architecture
   review and design-doc generation.
 - **Installable CLI (`fastddd`):** the scripts and opencode assets packaged into a
-  PyPI-ready wheel; install with `uv tool install` and run everything with one command
-  (`fastddd setup|db|doctor|opencode|new-module|...`).
+  PyPI-ready wheel; install with `pip install .` / `uv tool install .` and run
+  everything with one command (`fastddd setup|db|doctor|opencode|new-module|...`).
 - **Code quality:** a strict Ruff configuration (`E,W,F,I,UP,B,C4,SIM,RET,RUF`),
   auto-formatting and fixed findings (including `raise ... from`, redundant assignments
   and import order).

@@ -4,6 +4,9 @@ version = "3.0.0"
 description = "Python FastAPI backend template, organized by Clean Architecture layers (domain, application, infrastructure, presentation) and DDD principles. Includes dependency management, Docker support, testing boilerplate, CI-friendly setup and best practices, modular scaffolding to jump-start new projects and ensure long-term maintainability."
 readme = "README.md"
 requires-python = ">=3.14"
+authors = [{name = "Erfan Mohamadnia", email = "zelzeleh.19@gmail.com"}]
+license = {text = "MIT"}
+urls = {Homepage = "https://github.com/Elmino-19/clean-architecture", Repository = "https://github.com/Elmino-19/clean-architecture"}
 dependencies = [
     "alembic>=1.18.4",
     "asyncpg>=0.31.0",
@@ -43,12 +46,21 @@ dev = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build.targets.sdist]
+exclude = [
+  ".opencode/node_modules",
+  ".opencode/package.json",
+  ".opencode/package-lock.json",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["fastddd"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "scripts" = "fastddd/data/scripts"
-".opencode" = "fastddd/data/opencode"
+".opencode/agent" = "fastddd/data/opencode/agent"
+".opencode/command" = "fastddd/data/opencode/command"
+".opencode/skills" = "fastddd/data/opencode/skills"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
