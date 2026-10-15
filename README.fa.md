@@ -118,6 +118,22 @@ curl -X POST http://localhost:8000/api/v1/authentication/login/ \
 curl http://localhost:8000/api/v1/user/me/ -b cookies.txt
 ```
 
+### نصب CLI با pip
+
+همان اسکریپت‌ها به‌صورت یک توزیع آمادهٔ PyPI هم بسته‌بندی شده‌اند، پس `fastddd` را
+می‌توان با `pip` (یا `uv`) نصب کرد و دیگر لازم نیست `uv run` بزنی:
+
+```bash
+pip install .            # در یک virtualenv تازه، از روی همین ریپوی کلون‌شده
+pip install -e .         # نصب ویرایشی، برای توسعهٔ خودِ CLI
+uv tool install .        # نصب سراسری و ایزولهٔ دستور `fastddd`
+```
+
+نیازمند **Python 3.14+** است. بعد از نصب، `fastddd <command>` از هر دایرکتوری کار
+می‌کند (مثلاً `fastddd setup`، `fastddd doctor`، `fastddd new-module billing`) — فهرست
+کامل دستورها در [راهنمای کاربر](docs/user-guide.md#۶-cli-یکپارچهٔ-fastddd). بعد از
+انتشار روی PyPI همین نصب از مخزن هم کار می‌کند: `pip install clean-architecture`.
+
 ---
 
 ## گردش کار از صفر

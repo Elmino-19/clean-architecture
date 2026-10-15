@@ -136,6 +136,22 @@ curl -X POST http://localhost:8000/api/v1/authentication/login/ \
 curl http://localhost:8000/api/v1/user/me/ -b cookies.txt
 ```
 
+### Install the CLI with pip
+
+The same scripts are also packaged as a PyPI-ready distribution, so `fastddd` can be
+installed with `pip` (or `uv`) instead of using `uv run`:
+
+```bash
+pip install .            # in a fresh virtualenv, from the cloned repo
+pip install -e .         # editable install, to develop the CLI itself
+uv tool install .        # isolated global install of the `fastddd` command
+```
+
+Requires **Python 3.14+**. Afterwards `fastddd <command>` works from any directory
+(e.g. `fastddd setup`, `fastddd doctor`, `fastddd new-module billing`) — see the
+[full command list](docs/user-guide.md#۶-cli-یکپارچهٔ-fastddd). After the package is
+published, the same install works from PyPI: `pip install clean-architecture`.
+
 ---
 
 ## Workflow from zero

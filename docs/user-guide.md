@@ -331,9 +331,10 @@ fastddd <command>                    # بعد از نصب، در هر پروژه
 python -m fastddd <command>          # راه جایگزین
 ```
 
-`fastddd` روی PyPI هم قابل انتشار است؛ بعد از انتشار با `pip install clean-architecture`
-یا `uv tool install clean-architecture` نصب می‌شود. برای نصب ویرایشی (توسعهٔ خودِ CLI)
-`pip install -e .` بزن.
+`fastddd` روی PyPI هم قابل انتشار است (نام توزیع: `clean-architecture`)؛ بعد از انتشار با
+`pip install clean-architecture` یا `uv tool install clean-architecture` نصب می‌شود. برای
+نصب ویرایشی (توسعهٔ خودِ CLI) `pip install -e .` بزن. نصب با `pip` نیازمند **Python 3.14+**
+است (همان شرط `requires-python` پروژه).
 
 فهرست دستورها (`fastddd --help`):
 
