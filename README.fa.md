@@ -225,6 +225,16 @@ make format      # فرمت خودکار
 | `make test-watch` | اجرای تست‌ها و تکرار خودکار با تغییر فایل‌ها. |
 | `make lint` | بررسی با Ruff. |
 | `make format` | فرمت خودکار با Ruff. |
+| `make build` | ساخت wheel و sdist در `dist/`. |
+| `make publish` | `uv build` سپس `uv publish` (توکن PyPI یا trusted publishing). |
+
+### انتشار روی PyPI
+
+`version` را در `pyproject.toml` بالا ببر، سپس یا یک تگ بزن (`git tag v3.0.0 &&
+git push origin v3.0.0`) — فایل `.github/workflows/publish.yml` بسته را می‌سازد و پس از
+بررسی هم‌خوانی تگ با نسخه، با
+[trusted publishing](https://docs.pypi.org/trusted-publishers/) روی PyPI آپلود می‌کند —
+یا دستی با `make publish` منتشر کن.
 
 ### دیتابیس
 
@@ -910,6 +920,9 @@ uv sync
 - **CLI قابل نصب (`fastddd`):** بسته‌بندی اسکریپت‌ها و دارایی‌های opencode در یک
   wheel آمادهٔ انتشار روی PyPI؛ نصب با `pip install .` یا `uv tool install .` و اجرای
   همهٔ کارها با یک دستور (`fastddd setup|db|doctor|opencode|new-module|...`).
+- **CI و انتشار:** ورک‌فلوهای GitHub Actions برای lint، بررسی فرمت، بیلد و تست؛ با
+  زدن تگ `v*` یا ساخت Release، wheel و sdist با trusted publishing روی PyPI آپلود
+  می‌شوند (`.github/workflows/`).
 - **کیفیت کد:** پیکربندی سخت‌گیرانهٔ Ruff (`E,W,F,I,UP,B,C4,SIM,RET,RUF`)، فرمت
   خودکار و رفع ایرادها (از جمله `raise ... from`، انتساب‌های اضافه و ترتیب
   importها).

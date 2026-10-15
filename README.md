@@ -243,6 +243,15 @@ make format      # auto-format
 | `make test-watch` | Run tests and re-run automatically on file changes. |
 | `make lint` | Check with Ruff. |
 | `make format` | Auto-format with Ruff. |
+| `make build` | Build the wheel and sdist into `dist/`. |
+| `make publish` | `uv build` then `uv publish` (PyPI token or trusted publishing). |
+
+### Releasing to PyPI
+
+Bump `version` in `pyproject.toml`, then either push a tag (`git tag v3.0.0 &&
+git push origin v3.0.0`) — `.github/workflows/publish.yml` builds and uploads to PyPI
+via [trusted publishing](https://docs.pypi.org/trusted-publishers/) after verifying the
+tag matches the version — or publish manually with `make publish`.
 
 ### Database
 
@@ -923,6 +932,9 @@ the following added or improved on top:
 - **Installable CLI (`fastddd`):** the scripts and opencode assets packaged into a
   PyPI-ready wheel; install with `pip install .` / `uv tool install .` and run
   everything with one command (`fastddd setup|db|doctor|opencode|new-module|...`).
+- **CI and releases:** GitHub Actions run lint, format-check, build and tests; pushing a
+  `v*` tag or publishing a release uploads the wheel and sdist to PyPI via trusted
+  publishing (`.github/workflows/`).
 - **Code quality:** a strict Ruff configuration (`E,W,F,I,UP,B,C4,SIM,RET,RUF`),
   auto-formatting and fixed findings (including `raise ... from`, redundant assignments
   and import order).

@@ -213,6 +213,36 @@ make format      # فرمت خودکار (Ruff)
 | `make test-watch` | `uv run pytest -f -q` | ⚠️ **فعلاً خراب است** — به پلاگین `pytest-watch` نیاز دارد که نصب نیست (`unrecognized arguments: -f`). تا نصب نشده از `make test` استفاده کن |
 | `make lint` | `uv run ruff check .` | بررسی کیفیت کد |
 | `make format` | `uv run ruff format .` | فرمت خودکار |
+| `make build` | `uv build` | ساخت wheel و sdist در `dist/` برای انتشار |
+| `make publish` | `uv build` سپس `uv publish` | انتشار بسته روی PyPI (نیازمند توکن یا trusted publishing) |
+
+### انتشار روی PyPI
+
+نسخهٔ پروژه در `pyproject.toml` (`version = "3.0.0"`) تعیین می‌شود و نام توزیع روی PyPI
+`clean-architecture` است. دو مسیر برای انتشار هست:
+
+**۱) خودکار با GitHub Actions (توصیه‌شده).** فایل `.github/workflows/publish.yml` با
+انتشار یک **تگ** `v*` یا یک **Release** در گیت‌هاب اجرا می‌شود و بسته را می‌سازد و با
+[trusted publishing](https://docs.pypi.org/trusted-publishers/) (بدون توکن) روی PyPI می‌گذارد.
+تنها کار دستی: در پنل PyPI → پروژه → Publishing، این مخزن و نام محیط `pypi` را به‌عنوان
+trusted publisher ثبت کن. سپس:
+
+```bash
+git tag v3.0.0
+git push origin v3.0.0
+```
+
+ورک‌فلو قبل از انتشار بررسی می‌کند که تگ با `version` داخل `pyproject.toml` یکی باشد.
+
+**۲) دستی از روی سیستم خودت:**
+
+```bash
+make build                       # فقط ساخت dist/clean_architecture-3.0.0-*
+uv publish                       # یا: uv publish --token pypi-xxxx
+```
+
+> قبل از هر انتشار، `version` را در `pyproject.toml` بالا ببر؛ PyPI اجازهٔ آپلود دوبارهٔ
+> همان نسخه را نمی‌دهد.
 
 ---
 

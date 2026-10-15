@@ -109,6 +109,14 @@ lint:
 format:
 	uv run ruff format .
 
+.PHONY: build
+build:
+	uv build
+
+.PHONY: publish
+publish: build
+	uv publish
+
 .PHONY: migrate
 migrate:
 	uv run alembic upgrade head
