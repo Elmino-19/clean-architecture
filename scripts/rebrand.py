@@ -123,7 +123,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Rename the template into your own project, in place."
     )
-    parser.add_argument("project", help="Project name, e.g. 'Acme CRM'")
+    parser.add_argument("project", help="Project name, e.g. 'Project Name'")
     parser.add_argument("--author", default="", help="Your name")
     parser.add_argument("--email", default="", help="Your email")
     parser.add_argument("--url", default="", help="Your project URL")

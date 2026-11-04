@@ -85,10 +85,10 @@ cd my-project
 
 ```bash
 # فقط نمایش، بدون نوشتن
-uv run python scripts/rebrand.py "Acme CRM" --dry-run
+uv run python scripts/rebrand.py "Project Name" --dry-run
 
 # اعمال واقعی
-make rebrand name="Acme CRM" author="Your Name" email="you@acme.io"
+make rebrand name="Project Name" author="Your Name" email="you@project.io"
 ```
 
 > `rebrand.py` به‌عمد `README.md` را دست نمی‌زند (مستندات معماری را می‌خواهی نگه داری).
@@ -129,7 +129,7 @@ make install
 حالت بدون سؤال (برای CI یا اسکریپت):
 
 ```bash
-make install-yes p="Acme CRM"
+make install-yes p="Project Name"
 ```
 
 ### گام ۴ — اجرا و اولین ورود
@@ -267,7 +267,7 @@ uv publish                       # یا: uv publish --token pypi-xxxx
 مثال‌ها:
 
 ```bash
-uv run python scripts/install.py --yes --project "Acme CRM"
+uv run python scripts/install.py --yes --project "Project Name"
 uv run python scripts/install.py --skip-database --global-assets
 ```
 
@@ -293,7 +293,7 @@ Idempotent است و اگر پورت ۸۰۰۰/۵۴۳۲/۶۳۷۹ اشغال با�
 
 ```
 --skip-redis, --skip-migrations, --skip-admin
---admin-name "Sara Ahmadi"
+--admin-name "John Doe"
 --check   فقط گزارش وضعیت، بدون ساختن چیزی
 ```
 
@@ -323,7 +323,7 @@ make doctor
 ### `rebrand.py` — تغییر نام template
 
 ```
-project (positional, مثل 'Acme CRM')
+project (positional, مثل 'Project Name')
 --author, --email, --url
 --docs      README و markdownها را هم بازنویسی کن
 --dry-run   فقط نمایش، بدون نوشتن

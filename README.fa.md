@@ -17,7 +17,7 @@ Domain-Driven Design و همه‌چیز از قبل سیم‌کشی‌شده —
 - [گردش کار از صفر](#گردش-کار-از-صفر)
 - [مرجع کامل کامندها](#مرجع-کامل-کامندها)
 - [اسکریپت‌ها](#اسکریپتها)
-- [ابزارهای opencode (اسکیل‌ها و ایجنت‌ها)](#ابزارهای-opencode-اسکیلها-و-ایجنتها)
+- [ابزارهای opencode (اسکیل‌ها، ایجنت‌ها و کامندها)](#ابزارهای-opencode-اسکیلها-ایجنتها-و-کامندها)
 - [معماری](#معماری)
 - [ساختار یک ماژول](#ساختار-یک-ماژول)
 - [الگوهای خطا](#الگوهای-خطا)
@@ -84,11 +84,11 @@ Install opencode skills globally too [y/N]
 برای حالت بدون سؤال (CI یا اسکریپت):
 
 ```bash
-make install-yes p="Acme CRM"
+make install-yes p="Project Name"
 # یا کنترل کامل:
 uv run python scripts/install.py --yes \
-  --project "Acme CRM" --db-name acme_crm --db-user acme \
-  --db-password "..." --admin-email admin@acme.io --admin-password "..."
+  --project "Project Name" --db-name project_name --db-user project \
+  --db-password "..." --admin-email admin@project.io --admin-password "..."
 ```
 
 > اگر `sudo` برای ساخت role رمز بخواهد و ترمینال تعاملی نباشد، اسکریپت متوقف
@@ -145,7 +145,7 @@ uv tool install .        # نصب سراسری و ایزولهٔ دستور `fas
 git clone https://github.com/Elmino-19/clean-architecture.git my-project && cd my-project
 
 # ۲. نام‌گذاری مجدد (اختیاری ولی توصیه‌شده)
-make rebrand name="Acme CRM" author="نام شما" email="you@acme.io"
+make rebrand name="Project Name" author="نام شما" email="you@project.io"
 
 # ۳. نصب وابستگی‌ها
 uv sync
@@ -265,7 +265,7 @@ git push origin v3.0.0`) — فایل `.github/workflows/publish.yml` بسته �
 
 ```bash
 uv run python scripts/install.py                    # ویزارد تعاملی
-uv run python scripts/install.py --yes --project "Acme CRM"
+uv run python scripts/install.py --yes --project "Project Name"
 uv run python scripts/install.py --skip-database    # فقط .env و توکن‌ها
 uv run python scripts/install.py --global-assets    # نصب سراسری اسکیل‌ها
 ```
@@ -318,7 +318,7 @@ uv run python scripts/opencode_setup.py --global   # + نصب سراسری
 uv run python scripts/setup_env.py
 
 # بدون سؤال
-uv run python scripts/setup_env.py --yes --project "Acme CRM" --admin-email a@b.io
+uv run python scripts/setup_env.py --yes --project "Project Name" --admin-email a@b.io
 
 # فقط بررسی
 uv run python scripts/setup_env.py --check
@@ -361,7 +361,7 @@ uv run python scripts/provision.py --check         # فقط وضعیت
 uv run python scripts/provision.py --skip-redis    # رد کردن Redis
 uv run python scripts/provision.py --skip-migrations
 uv run python scripts/provision.py --skip-admin
-uv run python scripts/provision.py --admin-name "Sara Ahmadi"
+uv run python scripts/provision.py --admin-name "John Doe"
 ```
 
 ### `doctor.py` — بررسی سلامت (فقط-خواندن)
@@ -390,14 +390,14 @@ uv run python scripts/doctor.py
 
 ```bash
 # نمایش تغییرات بدون نوشتن
-uv run python scripts/rebrand.py "Acme CRM" --dry-run
+uv run python scripts/rebrand.py "Project Name" --dry-run
 
 # اعمال
-uv run python scripts/rebrand.py "Acme CRM" \
-  --author "نام شما" --email "you@acme.io" --url "https://acme.io"
+uv run python scripts/rebrand.py "Project Name" \
+  --author "نام شما" --email "you@project.io" --url "https://project.io"
 
 # نوشتن مستندات هم (README و docs) با --docs
-uv run python scripts/rebrand.py "Acme CRM" --docs
+uv run python scripts/rebrand.py "Project Name" --docs
 ```
 
 | آرگومان | کار |
@@ -430,9 +430,9 @@ uv run python scripts/create_module.py
 
 ---
 
-## ابزارهای opencode (اسکیل‌ها و ایجنت‌ها)
+## ابزارهای opencode (اسکیل‌ها، ایجنت‌ها و کامندها)
 
-پروژه یک بسته‌ی اسکیل و ایجنت همراه دارد که در `.opencode/` قرار می‌گیرند و
+پروژه یک بستهٔ اسکیل، ایجنت و کامند همراه دارد که در `.opencode/` قرار می‌گیرد و
 opencode خودکار می‌خواند. برای نصب سراسری در همهٔ پروژه‌ها:
 
 ```bash
@@ -449,31 +449,73 @@ make opencode      # کپی در ~/.config/opencode/
 هر اسکیل یک `SKILL.md` کوتاه است و جزئیات در `references/` کنارش می‌آید
 (progressive disclosure).
 
-### ایجنت‌ها
+### زنجیره: منشی ← ایجنت‌های نقش‌دار
 
-| ایجنت | نقش | دسترسی |
-|---|---|---|
-| `sdd-writer` | نوشتن سند جامع طراحی (`docs/sdd.md`)، بدون کد | ویرایش آزاد |
-| `code-explorer` | آنالیز و کاوش کدبیس: معماری، جریان، blast radius | فقط-خواندن |
-| `backend-developer` | پیاده‌سازی کد بک‌اند (ماژول، use case، repository، router) | ویرایش آزاد |
-| `code-auditor` | بازبینی کد و تطبیق با قوانین/اسکیل‌ها؛ گزارش انحراف | فقط-خواندن |
+همه‌چیز از یک **منشی** (`orchestrator`) عبور می‌کند. او خط فرمان ترکیبی را پارس
+می‌کند، پیش‌فرض‌ها را اعمال می‌کند، یک‌بار پروژه را با کدگراف می‌فهمد، ایجنت‌های
+نقش‌دار را فرا می‌خواند و در پایان گزارش می‌دهد. دسترسی او برای خواندن کد، نوشتن
+کد و بارگذاری اسکیل **ممنوع** است؛ او فقط کاتالوگ را می‌شناسد.
+
+```text
+/go scan,plan,craft,review -n 2 -- افزودن CRUD به ماژول key
+        │
+        ▼
+   orchestrator ──▶ analyzer ──▶ planner ──▶ coder × N / editor × N ──▶ reviewer
+   (پارس می‌کند،      (فقط‌خواندن)  (تسک‌لیست)  (کد جدید / اصلاح)          (make test،
+    گزارش می‌دهد)                                                          make lint یک‌بار)
+```
+
+| ایجنت | نقش | می‌نویسد | اسکیل | `steps` |
+|---|---|---|---|---|
+| `orchestrator` | پارس فرمان، dispatch، گزارش | `.me/**` | — | ۲۵ |
+| `analyzer` | `--mode scan` ایرادها، `--mode map` معماری و جریان | `.me/**` | `backend-development` | ۲۰ |
+| `planner` | تسک‌لیست مرتب و وابسته‌محور، یک فایل برای هر کارگر | `.me/**` | `backend-development` | ۱۵ |
+| `coder` | کد **جدید**، فقط تسک‌فایل خودش | `app/`، `test/`، `migrations/versions/` | `backend-development` | ۴۰ |
+| `editor` | **اصلاح** کد موجود، بدون گسترش دامنه | مثل coder | `backend-development` | ۳۰ |
+| `reviewer` | راستی‌آزمایی آیتم‌های تیک‌خورده، یک‌بار `make test` + `make lint` | `.me/**` | `backend-development` | ۲۰ |
+| `sdd-writer` | نوشتن سند طراحی (`docs/sdd.md`)، بدون کد | `docs/**` | `software-design-document` | ۲۵ |
+
+قرارداد نقش‌ها: آنالیزور و پلنر تسک‌لیست را می‌نویسند؛ کدنویس و ویرایشگر فقط از آن
+پیروی می‌کنند و `- [x]` می‌زنند؛ بازبین فقط بررسی می‌کند و موارد باز را برمی‌گرداند
+و هرگز اصلاح نمی‌کند. `make test` و `make lint` یک‌بار در هر اجرا، توسط بازبین.
 
 ### کامندها
 
-هر کامند یکی از ایجنت‌ها را در یک **دامنهٔ مشخص** صدا می‌زند. متن بعد از نام کامند
-به‌عنوان آرگومان به ایجنت می‌رسد (اگر خالی بماند، خودش می‌پرسد).
+به‌جای ساختن کامند برای هر ترکیب، یک پارسر و چند پریست:
 
-| خانواده | ایجنت | فایل | ماژول | لایه (همهٔ ماژول‌ها) | همهٔ ماژول‌ها |
-|---|---|---|---|---|---|
-| `audit-*` | code-auditor | `/audit-file <path>` | `/audit-module <module>` | `/audit-layer <layer>` | `/audit-all` |
-| `explore-*` | code-explorer | `/explore-file <path>` | `/explore-module <module>` | `/explore-layer <layer>` | `/explore-all` |
-| `develop-*` | backend-developer | `/develop-file <path>` | `/develop-module <module>` | `/develop-layer <layer>` | `/develop-all` |
-| `design-*` | sdd-writer | `/design-file <part>` | `/design-module <module>` | `/design-layer <concern>` | `/design-all` |
+| کامند | چه اجرا می‌کند |
+|---|---|
+| `/go <verbs> [flags] [-- هدف]` | هر ترکیبی از مرحله‌ها، به همان ترتیب |
+| `/scan` | `scan` — یافتن ایرادها (فقط‌خواندن) |
+| `/explore` | `explore` — معماری، جریان درخواست، blast radius |
+| `/plan` | `plan` — فقط تسک‌لیست، بدون کد |
+| `/craft` | `plan,craft,review` — کد جدید، بعد راستی‌آزمایی |
+| `/mend` | `scan,plan,mend,review` — فقط اصلاح موارد فهرست‌شده، بعد راستی‌آزمایی |
+| `/review` | `review` — فقط راستی‌آزمایی، هرگز اصلاح |
+| `/design` | `design` — سند طراحی، شاخه‌ای جدا |
 
-- `<layer>` یکی از `domain` \| `application` \| `infrastructure` \| `presentation`.
-- کامندهای `audit-*` و `explore-*` به‌صورت **subtask** اجرا می‌شوند: در یک نشست
-  جدا انجام و نتیجه خلاصه برمی‌گردد، تا کانتکست اصلی شلوغ نشود.
-- کامندهای `develop-*` و `design-*` در همان نشست اجرا می‌شوند تا تعاملی بمانند.
+```text
+<verbs> [--app be|both] [--scope all|module|layer|file] [--modules a,b]
+        [--layers domain,application,infrastructure,presentation] [--files path,…]
+        [--kind word,…] [-n N] [-- متن آزادِ هدف]
+```
+
+پیش‌فرض‌های آنچه ننویسی: `--scope all` (همهٔ ماژول‌ها)، `--layers` هر چهار لایه،
+`-n` **۳**، `--app both`. اگر `craft`/`mend` بدون `plan` بیاید، اول `plan` اجرا می‌شود
+و همیشه `review` هم اضافه می‌شود؛ `mend` بدون `scan` اول `scan` می‌گیرد — هر
+اضافه‌شدنی در گزارش اعلام می‌شود. نبودِ هدف برای `craft`/`mend`/`plan` فقط **یک**
+پرسش می‌سازد، هرگز حدس نمی‌زند.
+
+### خروجی هر اجرا
+
+```text
+.me/runs/<timestamp>-<slug>/plan.md        ← پلن
+.me/runs/<timestamp>-<slug>/tasks-1..N.md  ← یک فایل تسک برای هر کارگر (مالکیت یکتا)
+.me/runs/<timestamp>-<slug>/review.md      ← انجام‌شده/نیمه/انجام‌نشده + خروجی تست
+```
+
+مرجع کامل: [`.opencode/README.fa.md`](.opencode/README.fa.md) (فارسی) ·
+[`.opencode/README.md`](.opencode/README.md) (انگلیسی).
 
 پس از تغییر این بسته، opencode را **quit و restart** کن تا لود شود.
 
@@ -637,7 +679,7 @@ app/modules/{module}/
 | Repository | `Postgres` + PascalCase + Repository | `PostgresKnowledgeRepository` |
 | Cache | `Redis` + PascalCase + Cache | `RedisKnowledgeCache` |
 | Router | متغیر `router` | `router = APIRouter(**router_docs)` |
-| Table | `{prefix}_{plural_snake}` | `acme_crm_knowledges` |
+| Table | `{prefix}_{plural_snake}` | `project_name_knowledges` |
 | Constraint | `uq_/ix_/ck_/fk_` + نام جدول | `uq_knowledges_name` |
 
 ---
@@ -787,15 +829,15 @@ pydantic-settings از `.env` خوانده می‌شود. همیشه از single
 
 ### جدول‌ها
 
-جدول‌ها پیشوند `APPLICATION_TABLE_PREFIX` دارند، پس با پیش‌فرض `acme_crm` جدول
-کاربران می‌شود `acme_crm_users`. مهاجرت‌ها هم از همین تنظیم می‌خوانند، پس نام
+جدول‌ها پیشوند `APPLICATION_TABLE_PREFIX` دارند، پس با پیش‌فرض `project_name` جدول
+کاربران می‌شود `project_name_users`. مهاجرت‌ها هم از همین تنظیم می‌خوانند، پس نام
 جدول‌ها بین مدل‌ها، مهاجرت‌ها و دیتابیس همیشه یکسان است.
 
 ### قراردادها
 
 | مفهوم | قاعده | مثال |
 |---|---|---|
-| نام جدول | `{prefix}_{plural_snake}` | `acme_crm_keys` |
+| نام جدول | `{prefix}_{plural_snake}` | `project_name_keys` |
 | نوع Enum | `{snake}_enum` | `role_enum` |
 | Unique | `uq_{plural}_{cols}` | `uq_keys_hashed_key` |
 | Index | `ix_{plural}_{cols}` | `ix_keys_prefix` |

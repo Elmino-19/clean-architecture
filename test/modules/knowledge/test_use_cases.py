@@ -35,7 +35,7 @@ from test.fakes import (
 @pytest.fixture
 def manager() -> User:
     return User(
-        name=Name(first_name="Sara", last_name="Manager"),
+        name=Name(first_name="John", last_name="Manager"),
         email=f"{uuid4().hex[:8]}@example.com",
         gender=Gender.FEMALE,
         birthdate=date(1985, 5, 5),

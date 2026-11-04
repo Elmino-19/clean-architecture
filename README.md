@@ -33,7 +33,7 @@ coding.
 - [Workflow from zero](#workflow-from-zero)
 - [Full command reference](#full-command-reference)
 - [Scripts](#scripts)
-- [opencode tools (skills and agents)](#opencode-tools-skills-and-agents)
+- [opencode tools (skills, agents and commands)](#opencode-tools-skills-agents-and-commands)
 - [Architecture](#architecture)
 - [Module structure](#module-structure)
 - [Error patterns](#error-patterns)
@@ -101,11 +101,11 @@ Install opencode skills globally too [y/N]
 For the question-free mode (CI or scripts):
 
 ```bash
-make install-yes p="Acme CRM"
+make install-yes p="Project Name"
 # or full control:
 uv run python scripts/install.py --yes \
-  --project "Acme CRM" --db-name acme_crm --db-user acme \
-  --db-password "..." --admin-email admin@acme.io --admin-password "..."
+  --project "Project Name" --db-name project_name --db-user project \
+  --db-password "..." --admin-email admin@project.io --admin-password "..."
 ```
 
 > If `sudo` asks for a password to create the role and the terminal is not interactive,
@@ -163,7 +163,7 @@ To start a new project on this base:
 git clone https://github.com/Elmino-19/clean-architecture.git my-project && cd my-project
 
 # 2. Rename (optional but recommended)
-make rebrand name="Acme CRM" author="Your Name" email="you@acme.io"
+make rebrand name="Project Name" author="Your Name" email="you@project.io"
 
 # 3. Install dependencies
 uv sync
@@ -281,7 +281,7 @@ flow. See [Quick start](#one-command) for the flow details.
 
 ```bash
 uv run python scripts/install.py                    # interactive wizard
-uv run python scripts/install.py --yes --project "Acme CRM"
+uv run python scripts/install.py --yes --project "Project Name"
 uv run python scripts/install.py --skip-database    # only .env and tokens
 uv run python scripts/install.py --global-assets    # global skills install
 ```
@@ -333,7 +333,7 @@ Important behaviors:
 uv run python scripts/setup_env.py
 
 # no questions
-uv run python scripts/setup_env.py --yes --project "Acme CRM" --admin-email a@b.io
+uv run python scripts/setup_env.py --yes --project "Project Name" --admin-email a@b.io
 
 # check only
 uv run python scripts/setup_env.py --check
@@ -376,7 +376,7 @@ uv run python scripts/provision.py --check         # status only
 uv run python scripts/provision.py --skip-redis    # skip Redis
 uv run python scripts/provision.py --skip-migrations
 uv run python scripts/provision.py --skip-admin
-uv run python scripts/provision.py --admin-name "Sara Ahmadi"
+uv run python scripts/provision.py --admin-name "John Doe"
 ```
 
 ### `doctor.py` — health check (read-only)
@@ -405,14 +405,14 @@ script replaces all four, plus the package name in `pyproject.toml`.
 
 ```bash
 # show changes without writing
-uv run python scripts/rebrand.py "Acme CRM" --dry-run
+uv run python scripts/rebrand.py "Project Name" --dry-run
 
 # apply
-uv run python scripts/rebrand.py "Acme CRM" \
-  --author "Your Name" --email "you@acme.io" --url "https://acme.io"
+uv run python scripts/rebrand.py "Project Name" \
+  --author "Your Name" --email "you@project.io" --url "https://project.io"
 
 # also rewrite docs (README and markdown)
-uv run python scripts/rebrand.py "Acme CRM" --docs
+uv run python scripts/rebrand.py "Project Name" --docs
 ```
 
 | Argument | What it does |
@@ -447,8 +447,8 @@ the test folder).
 
 ## opencode tools (skills and agents)
 
-The project ships a skill and agent bundle that lives in `.opencode/` and opencode reads
-automatically. To install globally for all projects:
+The project ships a skill, agent and command bundle that lives in `.opencode/` and
+opencode reads automatically. To install globally for all projects:
 
 ```bash
 make opencode      # copy into ~/.config/opencode/
@@ -464,31 +464,73 @@ make opencode      # copy into ~/.config/opencode/
 Each skill is a short `SKILL.md` with the details next to it in `references/`
 (progressive disclosure).
 
-### Agents
+### The chain: orchestrator → role agents
 
-| Agent | Role | Access |
-|---|---|---|
-| `sdd-writer` | Writes the software design document (`docs/sdd.md`), no code | Free edit |
-| `code-explorer` | Codebase analysis and exploration: architecture, flow, blast radius | Read-only |
-| `backend-developer` | Backend implementation (module, use case, repository, router) | Free edit |
-| `code-auditor` | Reviews code against the rules/skills; reports deviations | Read-only |
+Everything goes through **one orchestrator** (the "secretary"). It parses a
+composite command line, applies the defaults, understands the project once via
+CodeGraph, dispatches the role agents, and reports each stage. Its permissions deny
+reading code, writing code and loading a skill — it only knows the catalog.
+
+```text
+/go scan,plan,craft,review -n 2 -- add CRUD to the key module
+        │
+        ▼
+   orchestrator ──▶ analyzer ──▶ planner ──▶ coder × N / editor × N ──▶ reviewer
+   (parses,          (read-only)  (task list)  (new code / fixes)         (make test,
+    reports)                                                          make lint once)
+```
+
+| Agent | Role | Writes | Skill | `steps` |
+|---|---|---|---|---|
+| `orchestrator` | parses the command, dispatches, reports | `.me/**` | — | 25 |
+| `analyzer` | `--mode scan` finds deviations, `--mode map` explains architecture | `.me/**` | `backend-development` | 20 |
+| `planner` | ordered, dependency-aware task list, one file per worker | `.me/**` | `backend-development` | 15 |
+| `coder` | **new** code, only its own task file | `app/`, `test/`, `migrations/versions/` | `backend-development` | 40 |
+| `editor` | **fixes** existing code, never widens scope | same as coder | `backend-development` | 30 |
+| `reviewer` | verifies the ticked items, runs `make test` + `make lint` **once** | `.me/**` | `backend-development` | 20 |
+| `sdd-writer` | writes the design document (`docs/sdd.md`), no code | `docs/**` | `software-design-document` | 25 |
+
+Contract between roles: the analyzer and planner write the task list; the coder and
+editor only follow it and tick `- [x]`; the reviewer only checks and hands open items
+back — it never fixes. `make test` and `make lint` run once per run, in the reviewer.
 
 ### Commands
 
-Each command invokes one of the agents in a **specific scope**. The text after the
-command name reaches the agent as its argument (if empty, it asks).
+Flags, not pre-baked command variants — one parser, every combination:
 
-| Family | Agent | File | Module | Layer (all modules) | All modules |
-|---|---|---|---|---|---|
-| `audit-*` | code-auditor | `/audit-file <path>` | `/audit-module <module>` | `/audit-layer <layer>` | `/audit-all` |
-| `explore-*` | code-explorer | `/explore-file <path>` | `/explore-module <module>` | `/explore-layer <layer>` | `/explore-all` |
-| `develop-*` | backend-developer | `/develop-file <path>` | `/develop-module <module>` | `/develop-layer <layer>` | `/develop-all` |
-| `design-*` | sdd-writer | `/design-file <part>` | `/design-module <module>` | `/design-layer <concern>` | `/design-all` |
+| Command | Runs |
+|---|---|
+| `/go <verbs> [flags] [-- objective]` | any combination of stages, in order |
+| `/scan` | `scan` — find deviations (read-only) |
+| `/explore` | `explore` — architecture, request flow, blast radius |
+| `/plan` | `plan` — task list only, no code |
+| `/craft` | `plan,craft,review` — implement new code, then verify |
+| `/mend` | `scan,plan,mend,review` — fix listed items only, then verify |
+| `/review` | `review` — verify only, never fix |
+| `/design` | `design` — the design document, separate branch |
 
-- `<layer>` is one of `domain` \| `application` \| `infrastructure` \| `presentation`.
-- `audit-*` and `explore-*` run as **subtasks**: they execute in an isolated session and
-  the summary comes back, so the main context stays clean.
-- `develop-*` and `design-*` run in the same session to stay interactive.
+```text
+<verbs> [--app be|both] [--scope all|module|layer|file] [--modules a,b]
+        [--layers domain,application,infrastructure,presentation] [--files path,…]
+        [--kind word,…] [-n N] [-- free-text objective]
+```
+
+Defaults for what you leave out: `--scope all` (every module), `--layers` all four,
+`-n` **3**, `--app both`. `craft`/`mend` without `plan` get a `plan` first, and always
+get a `review`; `mend` without `scan` gets a `scan` first — each insertion is announced
+in the report. A missing objective for `craft`/`mend`/`plan` triggers **one** question,
+never a guess.
+
+### Run artifacts
+
+```text
+.me/runs/<timestamp>-<slug>/plan.md        ← the plan
+.me/runs/<timestamp>-<slug>/tasks-1..N.md  ← one task file per worker (unique ownership)
+.me/runs/<timestamp>-<slug>/review.md      ← done / partial / not done + test output
+```
+
+Full reference: [`.opencode/README.md`](.opencode/README.md) (English) ·
+[`.opencode/README.fa.md`](.opencode/README.fa.md) (Persian).
 
 After changing this bundle, **quit and restart** opencode so it loads.
 
@@ -651,7 +693,7 @@ an empty `caches.py` means "this module has no cache", not "someone forgot a fil
 | Repository | `Postgres` + PascalCase + Repository | `PostgresKnowledgeRepository` |
 | Cache | `Redis` + PascalCase + Cache | `RedisKnowledgeCache` |
 | Router | `router` variable | `router = APIRouter(**router_docs)` |
-| Table | `{prefix}_{plural_snake}` | `acme_crm_knowledges` |
+| Table | `{prefix}_{plural_snake}` | `project_name_knowledges` |
 | Constraint | `uq_/ix_/ck_/fk_` + table name | `uq_knowledges_name` |
 
 ---
@@ -799,15 +841,15 @@ These are derived from the keys above and must not be set directly:
 
 ### Tables
 
-Tables carry the `APPLICATION_TABLE_PREFIX` prefix, so with the `acme_crm` prefix the
-users table becomes `acme_crm_users`. Migrations read the same setting, so table names
+Tables carry the `APPLICATION_TABLE_PREFIX` prefix, so with the `project_name` prefix the
+users table becomes `project_name_users`. Migrations read the same setting, so table names
 always match between models, migrations and the database.
 
 ### Conventions
 
 | Concept | Rule | Example |
 |---|---|---|
-| Table name | `{prefix}_{plural_snake}` | `acme_crm_keys` |
+| Table name | `{prefix}_{plural_snake}` | `project_name_keys` |
 | Enum type | `{snake}_enum` | `role_enum` |
 | Unique | `uq_{plural}_{cols}` | `uq_keys_hashed_key` |
 | Index | `ix_{plural}_{cols}` | `ix_keys_prefix` |
@@ -850,7 +892,7 @@ The app runs `alembic upgrade head` at startup, so a fresh stack migrates itself
 | Admin | `SECURITY_ADMIN_ALLOWED_PATHS` | Manager + admin |
 | API key | `SECURITY_API_KEY_ALLOWED_PATHS` | Independent — currently empty |
 
-Each path is declared **once**, in the lowest tier that should reach it. Both the
+Each path is declared **once**, in the lowest tier that should reach it of **Bruno Tanabe** ([@BrunoTanabe](ht. Both the
 trailing-slash and non-slash forms are required:
 
 ```python

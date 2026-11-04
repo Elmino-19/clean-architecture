@@ -8,3 +8,35 @@ In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the re
 
 If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
 <!-- CODEGRAPH_END -->
+
+## Workflow commands and agents
+
+Work in this repository goes through the orchestrator, never ad-hoc:
+
+```text
+/go <verbs> [flags] [-- objective]     ← composite entry point
+/scan · /explore · /plan · /craft · /mend · /review · /design   ← presets
+```
+
+- Every command runs on `agent/orchestrator.md`. It parses the line, applies the
+  defaults table, understands the project once via CodeGraph, dispatches the role
+  agents, and reports each stage.
+- The orchestrator **cannot** read code, write code or load a skill — its permissions
+  deny it. It only knows the skill/agent catalog.
+- Roles: `analyzer` (read-only) → `planner` (task list) → `coder` (new code) /
+  `editor` (fixes) → `reviewer` (gate: `make test` + `make lint`, once). Workers act
+  only on their own task file and tick items; `reviewer` never fixes.
+- Full reference: `.opencode/README.md` (English) and `.opencode/README.fa.md`
+  (Persian), plus the table of contents in `README.md` / `README.fa.md`.
+
+## Verification
+
+- `make test` and `make lint` are run **once**, by the `reviewer`, at the end of a run.
+  Workers never run them.
+- Never report a stage as done without the worker's own words or the real command
+  output.
+
+## Restart
+
+After changing anything under `.opencode/` or `opencode.jsonc`, restart opencode —
+configuration is not hot-reloaded.
