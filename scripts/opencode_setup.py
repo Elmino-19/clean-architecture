@@ -60,7 +60,7 @@ def config_is_valid(path: Path) -> bool:
     try:
         json.loads(strip_jsonc(path.read_text(encoding="utf-8")))
         return True
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return False
 
 
@@ -153,7 +153,9 @@ def setup(*, global_install: bool = False, fix: bool = True) -> int:
             return 1
         for item in installed:
             print(f"  [inst]  {item} -> {GLOBAL_DIR}")
-        print("  opencode reloads config automatically; use /reload to force a full reload")
+        print(
+            "  opencode reloads config automatically; use /reload to force a full reload"
+        )
 
     return 0 if status != "invalid" else 1
 

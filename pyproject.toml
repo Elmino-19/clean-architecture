@@ -58,8 +58,8 @@ packages = ["fastddd"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "scripts" = "fastddd/data/scripts"
-".opencode/agent" = "fastddd/data/opencode/agent"
-".opencode/command" = "fastddd/data/opencode/command"
+".opencode/agents" = "fastddd/data/opencode/agents"
+".opencode/commands" = "fastddd/data/opencode/commands"
 ".opencode/skills" = "fastddd/data/opencode/skills"
 
 [tool.pytest.ini_options]
