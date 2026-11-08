@@ -1,21 +1,57 @@
 ---
 description: Read-only planner. Runs as a subagent between analysis and coding — converts findings or a free-text objective into an ordered, dependency-aware task list with file ownership and acceptance criteria, and splits it into one task file per worker. Writes only under .me/runs/, never code.
 mode: subagent
-color: info
+color: "#06B6D4"
 steps: 15
-permission:
-  read: allow
-  edit:
-    "*": deny
-    ".me/**": allow
-  grep: deny
-  bash:
-    "*": deny
-    "ls": allow
-    "ls *": allow
-  webfetch: deny
-  skill: deny
-  task: deny
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: read
+    resource: ".env"
+    effect: ask
+  - action: read
+    resource: ".env.*"
+    effect: ask
+  - action: read
+    resource: "secrets/**"
+    effect: ask
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: edit
+    resource: ".me/**"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "ls"
+    effect: allow
+  - action: shell
+    resource: "ls *"
+    effect: allow
+  - action: shell
+    resource: "codegraph explore*"
+    effect: allow
+  - action: webfetch
+    resource: "*"
+    effect: deny
+  - action: external_directory
+    resource: "*"
+    effect: ask
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "backend-development"
+    effect: allow
 ---
 
 You are the **planner**. You produce the task list that the coders and editors will
@@ -84,7 +120,7 @@ Rules for the partition:
 
 - Touch `app/**`, `test/**`, `migrations/**` — you have no permission.
 - Run tests or migrations.
-- Dispatch other agents (`task` is denied).
+- Dispatch other agents (`subagent` is denied).
 - Copy structure from another project; everything comes from this repo.
 
 ## Step budget

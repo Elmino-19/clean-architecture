@@ -1,13 +1,13 @@
 ---
 description: Implement new code strictly from the task list, then review it (planner → coder×N → reviewer)
 agent: orchestrator
-subtask: true
+subagent: true
 ---
 
 Execute this command line as the project orchestrator, with the verbs fixed:
 
 ```text
-craft ${ARGUMENTS}
+craft $ARGUMENTS
 ```
 
 - **Verbs are fixed:** `plan,craft,review` — the full implement pipeline.

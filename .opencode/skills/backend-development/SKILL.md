@@ -63,11 +63,12 @@ every layer (cache with tombstones, a service, full CRUD, actor projections).
 4. **infrastructure**: `models.py` → `repositories.py` → `caches.py` /
    `services.py` if needed.
 5. **presentation**: `schemas.py` → `docs.py` → `dependencies.py` → `routers.py`.
-6. Register the model in `migrations/env.py`, then
-   `make migration m="create_{module}"` and `make migrate`.
+6. Register the model in `migrations/env.py`. The migration commands
+   (`make migration m="create_{module}"`, `make migrate`) are run by the user or
+   the reviewer — workers never run them.
 7. Register the router in `app/app.py`.
-8. Write tests with in-memory fakes (`test/fakes.py`), then
-   `make test && make lint`.
+8. Write tests with in-memory fakes (`test/fakes.py`). The reviewer runs
+   `make test` and `make lint` once for the whole run; a worker does not.
 
 For the code of each numbered step, open `references/layers.md`.
 

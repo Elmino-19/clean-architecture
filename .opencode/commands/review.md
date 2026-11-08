@@ -1,13 +1,13 @@
 ---
 description: Verify the existing task list and diff, run make test/lint once, report done vs open
 agent: orchestrator
-subtask: true
+subagent: true
 ---
 
 Execute this command line as the project orchestrator, with the verbs fixed:
 
 ```text
-review ${ARGUMENTS}
+review $ARGUMENTS
 ```
 
 - **Verb is fixed:** `review`.

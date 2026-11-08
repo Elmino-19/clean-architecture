@@ -60,7 +60,7 @@ make dev         # بالا آوردن سرور
 
 | گام | کار |
 |---|---|
-| ۱ | **opencode** — اعتبارسنجی/ساخت `opencode.jsonc` و اسکیل‌ها و کامندهای `.opencode/` |
+| ۱ | **opencode** — اعتبارسنجی/ساخت `opencode.jsonc` و اسکیل‌ها، ایجنت‌ها و کامندهای `.opencode/` |
 | ۲ | **`.env`** — نوشتن کامل هر ۸۳ کلید، با secretهای تولیدشده و مقادیر مشتق از نام پروژه |
 | ۳ | **توکن‌ها** — تولید جفت‌کلیدهای JWT (Ed25519 + X25519) در `secrets/keys/` |
 | ۴ | **دیتابیس** — ساخت role + database، اجرای مهاجرت اولیه، ساخت کاربر ادمین |
@@ -183,7 +183,7 @@ make format      # فرمت خودکار
 |---|---|
 | `make install` | **نصب‌کنندهٔ یکپارچه.** ویزارد چندسؤالی، سپس opencode + `.env` + توکن‌ها + دیتابیس + مهاجرت + ادمین. |
 | `make install-yes p="نام پروژه"` | همان `install` بدون هیچ سؤال. مناسب CI یا اسکریپت. `p` نام پروژه است. |
-| `make opencode` | فقط کانفیگ opencode: اعتبارسنجی `opencode.jsonc` و نصب سراسری اسکیل/کامندها در `~/.config/opencode/`. |
+| `make opencode` | فقط کانفیگ opencode: اعتبارسنجی `opencode.jsonc` و نصب سراسری اسکیل/کامند/ایجنت‌ها در `~/.config/opencode/`. |
 | `make setup` | فقط `.env` را می‌سازد (بدون دیتابیس). |
 | `make setup-yes p="نام پروژه"` | همان `setup` بدون سؤال. |
 | `make env-check` | فقط بررسی می‌کند `.env` کامل و معتبر است یا نه. کد خروجی ۱ اگر کلیدی خالی باشد. |
@@ -284,7 +284,7 @@ uv run python scripts/install.py --global-assets    # نصب سراسری اسک
 ### `opencode_setup.py` — کانفیگ opencode
 
 `opencode.jsonc` را اعتبارسنجی می‌کند (و اگر خراب باشد با نگه‌داشتن backup
-بازسازی می‌کند) و در صورت درخواست، اسکیل‌ها و کامندهای پروژه را در
+بازسازی می‌کند) و در صورت درخواست، اسکیل‌ها، کامندها و ایجنت‌های پروژه را در
 `~/.config/opencode/` نصب می‌کند.
 
 ```bash
@@ -516,8 +516,10 @@ make opencode      # کپی در ~/.config/opencode/
 
 مرجع کامل: [`.opencode/README.fa.md`](.opencode/README.fa.md) (فارسی) ·
 [`.opencode/README.md`](.opencode/README.md) (انگلیسی).
+راهنمای گام‌به‌گام فارسی: [`docs/opencode-usage.fa.md`](docs/opencode-usage.fa.md).
 
-پس از تغییر این بسته، opencode را **quit و restart** کن تا لود شود.
+OpenCode V2 **این بسته را خودکار reload می‌کند**؛ بعد از ذخیره نیازی به restart نیست.
+فقط برای reload کامل دستی از `/reload` استفاده کن.
 
 ---
 
@@ -957,7 +959,7 @@ uv sync
   `rebrand`, `create_module` و ویزارد یکپارچهٔ `make install` — نوشتن کامل `.env`،
   تولید جفت‌کلیدهای JWT، ساخت role و database، اجرای مهاجرت و ساخت کاربر ادمین.
 - **جعبه‌ابزار opencode:** دو اسکیل (`backend-development`،
-  `software-design-document`)، چهار ایجنت و شانزده کامند در `.opencode/` برای
+  `software-design-document`)، هفت ایجنت و هشت کامند در `.opencode/` برای
   توسعه، بازبینی معماری و تولید سند طراحی.
 - **CLI قابل نصب (`fastddd`):** بسته‌بندی اسکریپت‌ها و دارایی‌های opencode در یک
   wheel آمادهٔ انتشار روی PyPI؛ نصب با `pip install .` یا `uv tool install .` و اجرای

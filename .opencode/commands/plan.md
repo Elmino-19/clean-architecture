@@ -1,13 +1,13 @@
 ---
 description: Produce an ordered, dependency-aware task list with one file per worker (planner, writes only .me/runs)
 agent: orchestrator
-subtask: true
+subagent: true
 ---
 
 Execute this command line as the project orchestrator, with the verbs fixed:
 
 ```text
-plan ${ARGUMENTS}
+plan $ARGUMENTS
 ```
 
 - **Verb is fixed:** `plan`. No code file is touched.

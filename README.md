@@ -78,7 +78,7 @@ everything:
 
 | Step | What it does |
 |---|---|
-| 1 | **opencode** — validate/create `opencode.jsonc` and the `.opencode/` skills and commands |
+| 1 | **opencode** — validate/create `opencode.jsonc` and the `.opencode/` skills, agents and commands |
 | 2 | **`.env`** — write all 83 keys, with generated secrets and values derived from the project name |
 | 3 | **Tokens** — generate the JWT key pairs (Ed25519 + X25519) in `secrets/keys/` |
 | 4 | **Database** — create role + database, run the initial migration, create the admin user |
@@ -201,7 +201,7 @@ make format      # auto-format
 |---|---|
 | `make install` | **All-in-one installer.** A short wizard, then opencode + `.env` + tokens + database + migrations + admin. |
 | `make install-yes p="project-name"` | Same as `install` with no questions. Good for CI or scripts. `p` is the project name. |
-| `make opencode` | Only opencode config: validates `opencode.jsonc` and installs skills/commands globally into `~/.config/opencode/`. |
+| `make opencode` | Only opencode config: validates `opencode.jsonc` and installs skills/commands/agents globally into `~/.config/opencode/`. |
 | `make setup` | Only builds `.env` (no database). |
 | `make setup-yes p="project-name"` | Same as `setup` with no questions. |
 | `make env-check` | Only checks whether `.env` is complete and valid. Exit code 1 if any key is empty. |
@@ -293,14 +293,14 @@ uv run python scripts/install.py --global-assets    # global skills install
 | `--admin-name` / `--admin-email` / `--admin-password` | Admin account |
 | `--environment` | `development` \| `homolog` \| `production` |
 | `--yes` | No questions, all defaults |
-| `--global-assets` | Copy skills/commands into `~/.config/opencode/` |
+| `--global-assets` | Copy skills, commands and agents into `~/.config/opencode/` |
 | `--force` | Rotate secrets |
 | `--skip-opencode` / `--skip-database` | Skip selected steps |
 
 ### `opencode_setup.py` — opencode config
 
 Validates `opencode.jsonc` (and rebuilds it with a backup kept if it is broken) and,
-on request, installs the project's skills and commands into `~/.config/opencode/`.
+on request, installs the project's skills, commands and agents into `~/.config/opencode/`.
 
 ```bash
 uv run python scripts/opencode_setup.py            # project check only
@@ -445,7 +445,7 @@ the test folder).
 
 ---
 
-## opencode tools (skills and agents)
+## opencode tools (skills, agents and commands)
 
 The project ships a skill, agent and command bundle that lives in `.opencode/` and
 opencode reads automatically. To install globally for all projects:
@@ -531,8 +531,10 @@ never a guess.
 
 Full reference: [`.opencode/README.md`](.opencode/README.md) (English) ·
 [`.opencode/README.fa.md`](.opencode/README.fa.md) (Persian).
+Step-by-step Persian usage guide: [`docs/opencode-usage.fa.md`](docs/opencode-usage.fa.md).
 
-After changing this bundle, **quit and restart** opencode so it loads.
+OpenCode V2 **reloads this bundle automatically** after a save. Use `/reload` only to
+force a full reload.
 
 ---
 
@@ -892,7 +894,7 @@ The app runs `alembic upgrade head` at startup, so a fresh stack migrates itself
 | Admin | `SECURITY_ADMIN_ALLOWED_PATHS` | Manager + admin |
 | API key | `SECURITY_API_KEY_ALLOWED_PATHS` | Independent — currently empty |
 
-Each path is declared **once**, in the lowest tier that should reach it of **Bruno Tanabe** ([@BrunoTanabe](ht. Both the
+Each path is declared **once**, in the lowest tier that should reach it. Both the
 trailing-slash and non-slash forms are required:
 
 ```python
@@ -969,7 +971,7 @@ the following added or improved on top:
   writing, JWT key-pair generation, role and database creation, migration runs and
   admin-user seeding.
 - **opencode toolkit:** two skills (`backend-development`, `software-design-document`),
-  four agents and sixteen commands under `.opencode/` for development, architecture
+  seven agents and eight commands under `.opencode/` for development, architecture
   review and design-doc generation.
 - **Installable CLI (`fastddd`):** the scripts and opencode assets packaged into a
   PyPI-ready wheel; install with `pip install .` / `uv tool install .` and run

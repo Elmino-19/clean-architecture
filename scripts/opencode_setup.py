@@ -28,18 +28,25 @@ GLOBAL_DIR = Path.home() / ".config" / "opencode"
 
 CANONICAL_CONFIG = {
     "$schema": "https://opencode.ai/config.json",
+    # The orchestrator runs as a subagent (depth 1) and dispatches the role
+    # agents itself, so the second level must be allowed.
+    "experimental": {"subagent_depth": 2},
     "mcp": {
-        "codegraph": {
-            "type": "local",
-            "command": ["codegraph", "serve", "--mcp"],
-            "enabled": True,
+        "servers": {
+            "codegraph": {
+                "type": "local",
+                "command": ["codegraph", "serve", "--mcp"],
+            }
         }
     },
 }
 
 SKILL_GLOBS = ("skills/*/SKILL.md", "skill/*/SKILL.md")
-COMMAND_GLOBS = ("command/*.md", "commands/*.md")
-AGENT_GLOBS = ("agent/*.md", "agents/*.md")
+COMMAND_GLOBS = ("commands/*.md", "command/*.md")
+AGENT_GLOBS = ("agents/*.md", "agent/*.md")
+
+# V2 preferred global directories for each asset kind.
+GLOBAL_KIND_DIRS = {"skill": "skills", "command": "commands", "agent": "agents"}
 
 
 def strip_jsonc(text: str) -> str:
@@ -53,7 +60,7 @@ def config_is_valid(path: Path) -> bool:
     try:
         json.loads(strip_jsonc(path.read_text(encoding="utf-8")))
         return True
-    except json.JSONDecodeError, OSError:
+    except (json.JSONDecodeError, OSError):
         return False
 
 
@@ -99,12 +106,12 @@ def install_globally() -> list[str]:
     """Copy skills, commands and agents to ~/.config/opencode."""
     installed: list[str] = []
     for source, kind in collect_assets():
-        # skills/<name>/     ->  ~/.config/opencode/skills/<name>/   (whole folder)
-        # command/<name>.md  ->  ~/.config/opencode/command/<name>.md
-        # agent/<name>.md    ->  ~/.config/opencode/agent/<name>.md
+        # skills/<name>/      ->  ~/.config/opencode/skills/<name>/      (whole folder)
+        # commands/<name>.md  ->  ~/.config/opencode/commands/<name>.md
+        # agents/<name>.md    ->  ~/.config/opencode/agents/<name>.md
         if kind == "skill":
             name = source.parent.name
-            destination = GLOBAL_DIR / "skills" / name
+            destination = GLOBAL_DIR / GLOBAL_KIND_DIRS[kind] / name
             # Mirror the whole skill folder so SKILL.md and its references/
             # stay together; remove any previous copy first.
             if destination.exists():
@@ -112,7 +119,7 @@ def install_globally() -> list[str]:
             shutil.copytree(source.parent, destination)
         else:
             name = source.stem
-            destination = GLOBAL_DIR / kind / source.name
+            destination = GLOBAL_DIR / GLOBAL_KIND_DIRS[kind] / source.name
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, destination)
         installed.append(f"{kind}:{name}")
@@ -146,7 +153,7 @@ def setup(*, global_install: bool = False, fix: bool = True) -> int:
             return 1
         for item in installed:
             print(f"  [inst]  {item} -> {GLOBAL_DIR}")
-        print("  restart opencode to pick up newly installed skills/commands")
+        print("  opencode reloads config automatically; use /reload to force a full reload")
 
     return 0 if status != "invalid" else 1
 

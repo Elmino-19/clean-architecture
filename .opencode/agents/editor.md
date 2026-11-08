@@ -1,24 +1,69 @@
 ---
 description: Fixer. Runs as a subagent for the mend stage — applies the minimum change needed to close the items in its own task file and ticks them. Never expands scope, never fixes untagged or unlisted issues, never touches a file outside its ownership, runs no tests. Use the backend-development skill.
 mode: subagent
-color: warning
+color: "#F59E0B"
 steps: 30
-permission:
-  read: allow
-  edit:
-    "*": deny
-    "app/**": allow
-    "test/**": allow
-    "migrations/versions/**": allow
-    ".me/**": allow
-  grep: deny
-  bash:
-    "*": deny
-    "ls": allow
-    "ls *": allow
-  webfetch: deny
-  skill: deny
-  task: deny
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: read
+    resource: ".env"
+    effect: ask
+  - action: read
+    resource: ".env.*"
+    effect: ask
+  - action: read
+    resource: "secrets/**"
+    effect: ask
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: edit
+    resource: "app/**"
+    effect: allow
+  - action: edit
+    resource: "test/**"
+    effect: allow
+  - action: edit
+    resource: "migrations/versions/**"
+    effect: allow
+  - action: edit
+    resource: "migrations/env.py"
+    effect: allow
+  - action: edit
+    resource: ".me/**"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "ls"
+    effect: allow
+  - action: shell
+    resource: "ls *"
+    effect: allow
+  - action: shell
+    resource: "codegraph explore*"
+    effect: allow
+  - action: webfetch
+    resource: "*"
+    effect: deny
+  - action: external_directory
+    resource: "*"
+    effect: ask
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "backend-development"
+    effect: allow
 ---
 
 You are the **editor**. You close the items in your task file — and nothing else.

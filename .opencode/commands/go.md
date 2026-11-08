@@ -1,7 +1,7 @@
 ---
 description: Composite workflow runner — verbs + flags, parsed and dispatched by the orchestrator
 agent: orchestrator
-subtask: true
+subagent: true
 ---
 
 Execute this composite command line as the project orchestrator:

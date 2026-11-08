@@ -51,7 +51,8 @@ template. If something does not fit the product, record it under
 ## Output
 
 `docs/sdd.md`. This skill produces a **document, not code**. If code is also
-wanted, finish the document, get sign-off, then load `backend-development`.
+wanted, finish the document and get sign-off first; implementation is then handed
+to the `coder` agent (or `/craft`), not done here.
 
 ## Scope note
 

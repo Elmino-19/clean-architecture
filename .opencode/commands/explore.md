@@ -1,13 +1,13 @@
 ---
 description: Explain architecture, request flow and blast radius for the given scope (analyzer, read-only)
 agent: orchestrator
-subtask: true
+subagent: true
 ---
 
 Execute this command line as the project orchestrator, with the verbs fixed:
 
 ```text
-explore ${ARGUMENTS}
+explore $ARGUMENTS
 ```
 
 - **Verb is fixed:** `explore` (analyzer in `--mode map`).

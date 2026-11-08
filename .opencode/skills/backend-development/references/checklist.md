@@ -13,7 +13,7 @@
 - [ ] Business logic lives only in the use case.
 - [ ] Every input/output is typed; no `Any`.
 - [ ] Messages come from `ResponseMessages`.
-- [ ] `make test` and `make lint` pass.
+- [ ] The reviewer confirms `make test` and `make lint` pass (workers do not run them).
 
 ## Anti-patterns
 

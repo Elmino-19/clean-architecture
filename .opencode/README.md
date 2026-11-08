@@ -24,12 +24,12 @@
 ## 1. The shape
 
 ```text
-user ──▶ /go | /scan | /plan | /craft | /mend | /review | /design
+user ──▶ /go | /scan | /explore | /plan | /craft | /mend | /review | /design
              │  (8 thin files, no logic)
              ▼
          orchestrator  (the secretary)
          parses · applies defaults · one CodeGraph pass · dispatches · reports
-             │  task(subtask)
+             │  subagent
              ├── analyzer   (read-only)          ── analyze
              ├── planner    (writes .me/runs)    ── plan
              ├── coder      (writes app/, test/) ── implement new
@@ -137,7 +137,7 @@ Item format:
 | `orchestrator` | none (catalog only) | 25 | `.me/**` | no | reading code, writing code, loading a skill |
 | `analyzer` | `backend-development` | 20 | `.me/**` | no | any fix, any dispatch |
 | `planner` | `backend-development` | 15 | `.me/**` | no | writing code |
-| `coder` | `backend-development` | 40 | `app/**`, `test/**`, `migrations/versions/**`, `.me/**` | no | anything outside its task file |
+| `coder` | `backend-development` | 40 | `app/**`, `test/**`, `migrations/versions/**`, `migrations/env.py`, `.me/**` | no | anything outside its task file |
 | `editor` | `backend-development` | 30 | same as coder | no | widening scope, unlisted fixes |
 | `reviewer` | `backend-development` | 20 | `.me/**` | **yes, once** | fixing anything |
 | `sdd-writer` | `software-design-document` | 25 | `docs/**` | no | production code |
@@ -154,10 +154,10 @@ The contract between roles:
 
 ## 6. Dispatch protocol
 
-Every `task` call is self-contained — workers share no context:
+Every `subagent` call is self-contained — workers share no context:
 
 ```text
-subagent_type: coder
+agent:         coder
 description:   craft — modules key, example
 prompt:        ROLE: coder
                RUN: .me/runs/20260101-1200-key-crud/
@@ -211,9 +211,9 @@ to text search.
 
 ---
 
-## 9. Configuration and restart
+## 9. Configuration and reload
 
-Agents live in `.opencode/agent/`, commands in `.opencode/command/`. Both directories
+Agents live in `.opencode/agents/`, commands in `.opencode/commands/`. Both directories
 are loaded automatically when the repository is the working directory. To use the same
 bundle in every project:
 
@@ -221,8 +221,8 @@ bundle in every project:
 make opencode      # copies skills, commands and agents into ~/.config/opencode/
 ```
 
-**Restart opencode after any change under `.opencode/` or `opencode.jsonc`** — the
-configuration is not hot-reloaded.
+OpenCode V2 **reloads configuration automatically** after a change under `.opencode/`
+or `opencode.jsonc`. Use `/reload` only to force a full reload.
 
 ---
 
@@ -230,9 +230,9 @@ configuration is not hot-reloaded.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Command missing from the palette | opencode was not restarted | quit and reopen |
+| Command missing from the palette | the command file was not saved under `.opencode/commands/` | save it there, then run `/reload` |
 | "Which verb?" was asked | no verb given to `/go` | add a verb, or use a preset |
 | 3 workers ran instead of your number | `-n` omitted (default is 3) | add `-n N` at the end |
 | A stage ran that you did not name | pipeline auto-insertion | announced in the report; use a preset to fix the verb set |
 | The orchestrator refused to read a file | by design — it never reads code | ask a preset/worker for the detail, or `@mention` a worker directly |
-| `make test` appears twice | a worker ran it (stale config) | restart, check the worker's `bash` permissions |
+| `make test` appears twice | a worker ran it (stale config) | run `/reload` and check the worker's `shell` permissions |

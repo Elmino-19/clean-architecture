@@ -1,25 +1,69 @@
 ---
 description: Gatekeeper. Runs as a subagent for the review stage — checks whether the task list items were actually implemented, runs make test and make lint exactly once, and reports done / not-done. It never fixes anything and never changes code. Use the backend-development skill.
 mode: subagent
-color: success
+color: "#22C55E"
 steps: 20
-permission:
-  read: allow
-  edit:
-    "*": deny
-    ".me/**": allow
-  grep: deny
-  bash:
-    "*": deny
-    "make test": allow
-    "make lint": allow
-    "git status*": allow
-    "git diff*": allow
-    "ls": allow
-    "ls *": allow
-  webfetch: deny
-  skill: deny
-  task: deny
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: read
+    resource: ".env"
+    effect: ask
+  - action: read
+    resource: ".env.*"
+    effect: ask
+  - action: read
+    resource: "secrets/**"
+    effect: ask
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: edit
+    resource: ".me/**"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "make test"
+    effect: allow
+  - action: shell
+    resource: "make lint"
+    effect: allow
+  - action: shell
+    resource: "git status*"
+    effect: allow
+  - action: shell
+    resource: "git diff*"
+    effect: allow
+  - action: shell
+    resource: "ls"
+    effect: allow
+  - action: shell
+    resource: "ls *"
+    effect: allow
+  - action: shell
+    resource: "codegraph explore*"
+    effect: allow
+  - action: webfetch
+    resource: "*"
+    effect: deny
+  - action: external_directory
+    resource: "*"
+    effect: ask
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "backend-development"
+    effect: allow
 ---
 
 You are the **reviewer**. You decide whether the work is done. You do not finish it.

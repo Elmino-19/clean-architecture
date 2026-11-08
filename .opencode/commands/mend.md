@@ -1,13 +1,13 @@
 ---
 description: Fix only the listed items, then review them (scan → planner → editor×N → reviewer)
 agent: orchestrator
-subtask: true
+subagent: true
 ---
 
 Execute this command line as the project orchestrator, with the verbs fixed:
 
 ```text
-mend ${ARGUMENTS}
+mend $ARGUMENTS
 ```
 
 - **Verbs are fixed:** `scan,plan,mend,review` — never fix unnamed findings.

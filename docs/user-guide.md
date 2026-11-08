@@ -171,7 +171,7 @@ make format      # فرمت خودکار (Ruff)
 ## ۴. کامندهای ترمینال — Makefile
 
 `make <نام>` فقط یک میان‌بر خوانا برای یک دستور طولانی است. با `make help` فهرست کامل
-را ببین (۲۹ تارگت). جدول زیر هر تارگت را با **دستور معادل** و **موقع استفاده** نشان
+را ببین (۳۰ تارگت). جدول زیر هر تارگت را با **دستور معادل** و **موقع استفاده** نشان
 می‌دهد:
 
 ### راه‌اندازی اولیه
@@ -180,7 +180,7 @@ make format      # فرمت خودکار (Ruff)
 |---|---|---|
 | `make install` | `uv run python scripts/install.py` | اولین بار؛ ویزارد کامل |
 | `make install-yes p="..."` | `.../install.py --yes --project "$(p)"` | نصب بدون سؤال (CI) |
-| `make opencode` | `.../opencode_setup.py --global` | نصب سراسری اسکیل/کامندهای opencode |
+| `make opencode` | `.../opencode_setup.py --global` | نصب سراسری اسکیل/کامند/ایجنت‌های opencode |
 | `make setup` | `.../setup_env.py` | فقط ساخت `.env` |
 | `make setup-yes p="..."` | `.../setup_env.py --yes --project "$(p)"` | ساخت `.env` بدون سؤال |
 | `make env-check` | `.../setup_env.py --check` | بررسی کامل‌بودن `.env` (کد خروج ۱ اگر کلیدی خالی باشد) |
@@ -258,7 +258,7 @@ uv publish                       # یا: uv publish --token pypi-xxxx
 --admin-name, --admin-email, --admin-password
 --environment {development,homolog,production}
 --yes            همهٔ پیش‌فرض‌ها، بدون هیچ سؤالی
---global-assets  کپی اسکیل/کامندها در ~/.config/opencode
+--global-assets  کپی اسکیل/کامند/ایجنت‌ها در ~/.config/opencode
 --force          چرخاندن secretها
 --skip-opencode  رد کردن گام opencode
 --skip-database  فقط .env و توکن‌ها؛ دست به Postgres نزن
@@ -334,7 +334,7 @@ project (positional, مثل 'Project Name')
 ### `opencode_setup.py` — کانفیگ opencode
 
 ```
---global   کپی skills/commands به ~/.config/opencode
+--global   کپی skills/commands/agents به ~/.config/opencode
 --no-fix   به‌جای تعمیر opencode.jsonc خراب، فقط گزارش بده
 ```
 
@@ -410,6 +410,8 @@ opencode یک **ایجنت برنامه‌نویسی داخل ترمینال** �
 او به زبان ساده می‌گویی چه می‌خواهی، و او فایل‌ها را می‌خواند/می‌سازد/ویرایش می‌کند.
 این پروژه برای او یک بستهٔ آماده دارد تا «قواعد خانه» را بلد باشد.
 
+> راهنمای کامل و مستقل این بسته: [`docs/opencode-usage.fa.md`](opencode-usage.fa.md)
+
 پیش‌نیاز: opencode نصب‌شده باشد و فایل `opencode.jsonc` معتبر در ریشهٔ پروژه باشد
 (`make opencode` آن را می‌سازد/تعمیر می‌کند و اتصال CodeGraph را فعال می‌کند).
 
@@ -423,43 +425,72 @@ opencode
 | مفهوم | به زبان ساده | مثال |
 |---|---|---|
 | **Skill** | کتاب قانونِ یک کار؛ خودش اجرا نمی‌شود، ولی ایجنت‌ها آن را می‌خوانند | `backend-development` (قواعد لایه‌ها)، `software-design-document` (قواعد سند طراحی) |
-| **Agent** | یک نقش تخصصی با دسترسی و سقف قدم مشخص | `backend-developer` (کدنویس)، `code-auditor` (بازبین فقط-خواندنی) |
-| **Command** | میان‌بر `/...` که یک ایجنت را در یک **دامنهٔ مشخص** صدا می‌زند | `/audit-module knowledge`، `/develop-module billing` |
+| **Agent** | یک نقش تخصصی با دسترسی و سقف قدم مشخص | `analyzer` (فقط‌خواندنی)، `coder` (نویسندهٔ کد جدید) |
+| **Command** | میان‌بر `/...` که orchestrator را با یک «خط فرمان» صدا می‌زند | `/scan --modules key`، `/craft --modules billing` |
 
-فایل‌ها این‌جاهستند: اسکیل‌ها در `.opencode/skills/*/`، ایجنت‌ها در
-`.opencode/agent/`، کامندها در `.opencode/command/`.
+فایل‌ها این‌جاهستند (ساختار V2): اسکیل‌ها در `.opencode/skills/*/SKILL.md`، ایجنت‌ها در
+`.opencode/agents/*.md`، کامندها در `.opencode/commands/*.md`. تنظیمات در
+`opencode.jsonc` است و MCP زیر `mcp.servers` تعریف می‌شود.
+
+### نقطهٔ ورود: orchestrator
+
+همهٔ کامندها روی ایجنت `orchestrator` اجرا می‌شوند. او خودش کد نمی‌خواند و نمی‌نویسد؛
+فقط خط فرمان را پارس می‌کند، یک بار با CodeGraph پروژه را می‌فهمد، کارگرها را
+می‌فرستد و در پایان جدول مراحل را می‌دهد.
+
+```text
+/go <verbs> [فلگ‌ها] [-- هدف آزاد]
+```
+
+| فلگ | مقدار | پیش‌فرض |
+|---|---|---|
+| `--app` | `be` \| `both` | `both` |
+| `--scope` | `all` \| `module` \| `layer` \| `file` | `all` |
+| `--modules` | `a,b` | همهٔ ماژول‌ها |
+| `--layers` | `domain,application,infrastructure,presentation` | هر چهار لایه |
+| `--files` | مسیر(ها) | — |
+| `--kind` | دسته‌های چک‌لیست | همه |
+| `-n` | تعداد کارگر | `3` |
+
+verbها (به ترتیب): `explore`، `scan`، `plan`، `craft`، `mend`، `review`، `design`.
 
 ### ایجنت‌ها — هرکدام چه کاره‌اند
 
 | ایجنت | نقش | دسترسی | سقف قدم |
 |---|---|---|---|
-| `backend-developer` | پیاده‌سازی کد (ماژول، use case، repository، router، تست) | ویرایش آزاد | ۴۰ |
-| `code-auditor` | بازبینی کد در برابر قوانین؛ فقط **گزارش** می‌دهد، درست نمی‌کند | فقط-خواندنی | ۲۰ |
-| `code-explorer` | کاوش و توضیح کد (معماری، جریان، «کجاست؟»، blast radius) | فقط-خواندنی | ۱۲ |
-| `sdd-writer` | نوشتن سند طراحی `docs/sdd.md`؛ هرگز کد تولید نمی‌کند | ویرایش آزاد | ۲۵ |
+| `orchestrator` | پارس خط فرمان، توزیع کارگرها، گزارش مرحله‌ای | فقط `.opencode/**`، `**/*.md`، `docs/**` را می‌خواند؛ فقط `.me/**` را می‌نویسد | ۲۵ |
+| `analyzer` | `--mode scan` یافته‌ها؛ `--mode map` معماری/جریان/blast radius | فقط‌خواندنی | ۲۰ |
+| `planner` | تبدیل یافته‌ها به تسک‌لیست با مالکیت فایل | فقط `.me/runs/**` | ۱۵ |
+| `coder` | نوشتن کد **جدید** طبق تسک‌فایل خودش | `app/`، `test/`، `migrations/versions/`، `.me/` | ۴۰ |
+| `editor` | اصلاح **حداقلی** طبق تسک‌فایل خودش | مثل coder | ۳۰ |
+| `reviewer` | بررسی انجام‌شدن تسک‌ها + یک بار `make test` و `make lint` | فقط‌خواندنی + همان دو کامند | ۲۰ |
+| `sdd-writer` | نوشتن `docs/sdd.md` | فقط `docs/` | ۲۵ |
 
-### کامندها — هرکدام چه کاره‌اند (۱۶ عدد)
+### کامندها — ۸ عدد
 
-الگو ثابت است: `/<کار>-<دامنه> <آرگومان>`. اگر آرگومان ندهی، خودش می‌پرسد.
+| کامند | verbهای ثابت | خروجی |
+|---|---|---|
+| `/go` | هر ترکیبی که بنویسی | خط فرمان کامل؛ همهٔ مراحل |
+| `/scan` | `scan` | جدول یافته‌ها (فقط گزارش) |
+| `/explore` | `explore` | نقشهٔ معماری، جریان درخواست، blast radius |
+| `/plan` | `plan` | `plan.md` + `tasks-1..N.md` |
+| `/craft` | `plan,craft,review` | کد جدید + بازبینی |
+| `/mend` | `scan,plan,mend,review` | اصلاح فقط موارد لیست‌شده |
+| `/review` | `review` | وضعیت تسک‌ها + نتیجهٔ تست/لینت |
+| `/design` | `design` | `docs/sdd.md` (شاخهٔ جدا) |
 
-| خانواده | ایجنت | فایل | ماژول | لایه (همهٔ ماژول‌ها) | همهٔ ماژول‌ها |
-|---|---|---|---|---|---|
-| `audit-*` | code-auditor | `/audit-file app/modules/key/domain/entities.py` | `/audit-module knowledge` | `/audit-layer domain` | `/audit-all` |
-| `explore-*` | code-explorer | `/explore-file app/core/security.py` | `/explore-module key` | `/explore-layer infrastructure` | `/explore-all` |
-| `develop-*` | backend-developer | `/develop-file app/modules/key/domain/entities.py` | `/develop-module billing` | `/develop-layer application` | `/develop-all` |
-| `design-*` | sdd-writer | `/design-file rate-limiting` | `/design-module billing` | `/design-layer caching` | `/design-all` |
-
-مقدار مجاز `<layer>`: `domain` \| `application` \| `infrastructure` \| `presentation`.
+اگر آرگومان یا verb لازم را ندهی، orchestrator **یک** سؤال می‌پرسد. اگر `craft`/`mend`
+بدون `plan` یا `review` بدهی، خودش آن‌ها را اضافه می‌کند و در گزارش اعلام می‌کند.
 
 ### سه قانونی که باید بدانی
 
-1. **subtask یعنی چه:** کامندهای `audit-*` و `explore-*` در یک نشست جدا اجرا می‌شوند و
-   فقط خلاصه برمی‌گردد تا کانتکست اصلی شلوغ نشود. `develop-*` و `design-*` در همان
-   نشست می‌مانند تا تعاملی باشی.
-2. **سقف قدم (step budget):** هر ایجنت سقف مشخصی دارد. اگر کار بزرگ‌تر باشد، وسط راه
-   می‌ایستد، گزارش می‌دهد و می‌پرسد «continue؟» — با تأیید تو ادامه می‌دهد.
-3. **بعد از تغییر بسته، restart:** اگر `.opencode/` یا `opencode.jsonc` را عوض کردی،
-   opencode را quit و restart کن؛ نشستِ در حال اجرا کانفیگ قبلی را نگه می‌دارد.
+1. **subagent یعنی چه:** کامندها با `subagent: true` در یک نشست فرزند اجرا می‌شوند و
+   فقط خلاصه به نشست اصلی برمی‌گردد. orchestrator هم کارگرها را با ابزار `subagent`
+   می‌فرستد؛ هر کارگر فقط تسک‌فایل خودش را می‌بیند.
+2. **سقف قدم (step budget):** هر ایجنت سقف مشخصی دارد (۴۰/۳۰/۲۵/۲۰/۱۵). اگر کار
+   بزرگ‌تر باشد، می‌ایستد، گزارش می‌دهد و می‌پرسد «continue؟».
+3. **بدون restart:** OpenCode V2 کانفیگ، agent، command و skill را خودکار reload
+   می‌کند. اگر تغییری اعمال نشد، `/reload` بزن (نیازی به quit/reopen نیست).
 
 > قرارداد CodeGraph: اولین ابزار ایجنت باید `codegraph_explore` باشد و `grep` ممنوع
 > است. لازم نیست حفظش کنی؛ فقط بدان اگر ایجنت گفت «ابزار در دسترس نیست»، مشکل از
@@ -469,20 +500,23 @@ opencode
 
 - **پروژه‌ای (خودکار):** هرچه در `.opencode/` است وقتی همین پروژه دایرکتوری کاری است،
   خودکار لود می‌شود. چیزی نصب لازم نیست.
-- **سراسری:** `make opencode` همان دارایی‌ها را در `~/.config/opencode/` کپی می‌کند تا
-  در همهٔ پروژه‌های روی سیستم در دسترس باشند. (بعدش restart لازم است.)
+- **سراسری:** `make opencode` همان دارایی‌ها را در `~/.config/opencode/skills/`،
+  `commands/` و `agents/` کپی می‌کند تا در همهٔ پروژه‌های سیستم در دسترس باشند.
+  تغییرات بدون restart اعمال می‌شوند (`/reload` برای reload کامل).
 
 ### یک مکالمهٔ نمونهٔ کامل
 
 ```text
-تو:  /explore-module key
-ایجنت: (نقشهٔ چهار لایه، پورت‌ها، جریان router تا database، وابستگی‌ها — با file:line)
-
-تو:  /audit-module key
+تو:  /scan --modules key,example
 ایجنت: (جدول یافته‌ها با Severity + verdict: Pass / Needs work / Fail)
 
-تو:  /develop-module billing
-ایجنت: (scaffold، چهار لایه، migration، ثبت router، تست، و در پایان make test و make lint تا سبز)
+تو:  /craft --modules billing -n 2 -- ماژول billing را کامل کن
+orchestrator: stage 1/3 · plan — ۹ آیتم · tasks-1..2.md
+             stage 2/3 · implement — ۹/۹ انجام شد
+             stage 3/3 · review — make test ✓ · make lint ✓
+
+تو:  /go scan,plan,mend,review --modules key -- اصل commit در لایهٔ application
+ایجنت: (فقط موارد نام‌برده اصلاح می‌شوند؛ بقیه گزارش می‌شوند)
 ```
 
 ---
@@ -510,7 +544,7 @@ make migrate
 make test && make lint
 ```
 
-میان‌بر با ایجنت: `/develop-module billing` همین ۵ قدم را برایت انجام می‌دهد.
+میان‌بر با ایجنت: `/craft --modules billing` همین ۵ قدم را برایت انجام می‌دهد.
 
 ### R2 — افزودن یک endpoint به ماژول موجود
 
@@ -582,7 +616,7 @@ make provision-check   # فقط role/database
 ├── fastddd/              CLI یکپارچه (بخش ۶)
 ├── test/                 تست‌ها + fakes.py (آینهٔ app/modules)
 ├── docs/                 همین راهنما + کالکشن Postman
-├── .opencode/           skills / agent / command (بخش ۷)
+├── .opencode/           skills / agents / commands (بخش ۷)
 ├── .me/                  کپی فارسی شخصی (commit نمی‌شود)
 ├── Makefile              همهٔ کامندهای بخش ۴
 ├── pyproject.toml        وابستگی‌ها + کانفیگ pytest/ruff
@@ -609,7 +643,7 @@ CRUD ساده، `knowledge`.
 | کلیدهای JWT نیست | اولین بوت | خودکار ساخته می‌شوند (`JWT_AUTO_GENERATE_KEYS`)؛ با `make doctor` چک کن |
 | `make test-watch` خطای `unrecognized arguments: -f` | پلاگین `pytest-watch` نصب نیست | فعلاً فقط `make test`؛ یا `uv add --dev pytest-watch` |
 | ایجنت می‌گوید ابزار CodeGraph نیست | MCP قطع یا `.codegraph/` نیست | یک خط گزارش بده و ادامه نده با grep (طبق قرارداد محیط) |
-| کامند opencode اثر نکرد | نشست قدیمی | quit + restartِ opencode |
+| تغییر کانفیگ اعمال نشد | کش نشست | `/reload` بزن؛ نیازی به restart نیست |
 
 ---
 
@@ -623,8 +657,8 @@ CRUD ساده، `knowledge`.
 | Port / Adapter | قرارداد (`typing.Protocol` در `interfaces.py`) / پیاده‌سازی (`Postgres*`، `Redis*`) |
 | Mapper | تابع مرزی `application/mappers.py` که بین schema/entity/model تبدیل می‌کند |
 | SDD | سند طراحی نرم‌افزار (`docs/sdd.md`)؛ خروجی ایجنت `sdd-writer` |
-| Subtask | اجرای ایزولهٔ کامندهای `audit-*`/`explore-*` با برگرداندن خلاصه |
-| Step budget | سقف قدم هر ایجنت (۴۰/۲۰/۱۲/۲۵)؛ تهش می‌پرسد «continue؟» |
+| Subagent | نشست فرزند برای کامندها/کارگرها؛ فقط خلاصه به نشست اصلی برمی‌گردد |
+| Step budget | سقف قدم هر ایجنت (۴۰/۳۰/۲۵/۲۰/۱۵)؛ تهش می‌پرسد «continue؟» |
 | Idempotent | اجرای دوباره اثر دوباره ندارد (همهٔ اسکریپت‌های راه‌اندازی) |
 | Slug | نام کوچک خط‌تیره‌ای/زیرخطی پروژه که در نام جدول‌ها و کلیدها می‌نشیند |
 | Soft delete | حذف منطقی با `is_active=false`؛ هرگز `DELETE` فیزیکی |

@@ -1,13 +1,13 @@
 ---
 description: Write the Software Design Document for a product or feature (sdd-writer, docs only)
 agent: orchestrator
-subtask: true
+subagent: true
 ---
 
 Execute this command line as the project orchestrator, with the verbs fixed:
 
 ```text
-design ${ARGUMENTS}
+design $ARGUMENTS
 ```
 
 - **Verb is fixed:** `design`. This is a separate branch: the planner pipeline is skipped.

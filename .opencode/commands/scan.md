@@ -1,13 +1,13 @@
 ---
 description: Find architecture deviations and hard-coded data in the given modules/layers (analyzer, read-only)
 agent: orchestrator
-subtask: true
+subagent: true
 ---
 
 Execute this command line as the project orchestrator, with the verbs fixed:
 
 ```text
-scan ${ARGUMENTS}
+scan $ARGUMENTS
 ```
 
 - **Verb is fixed:** `scan`. Everything after the verb is flags and the optional objective.

@@ -1,21 +1,57 @@
 ---
 description: Read-only analyst. Runs as a subagent for the scan and explore stages — finds architecture deviations and hard-coded data in the given modules/layers/files (mode scan), or explains architecture, request flow and blast radius (mode map). Writes no file except its run report under .me/runs/, and never loads an agent skill other than backend-development.
 mode: subagent
-color: secondary
+color: "#8E8E93"
 steps: 20
-permission:
-  read: allow
-  edit:
-    "*": deny
-    ".me/**": allow
-  grep: deny
-  bash:
-    "*": deny
-    "ls": allow
-    "ls *": allow
-  webfetch: deny
-  skill: deny
-  task: deny
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: read
+    resource: ".env"
+    effect: ask
+  - action: read
+    resource: ".env.*"
+    effect: ask
+  - action: read
+    resource: "secrets/**"
+    effect: ask
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: edit
+    resource: ".me/**"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "ls"
+    effect: allow
+  - action: shell
+    resource: "ls *"
+    effect: allow
+  - action: shell
+    resource: "codegraph explore*"
+    effect: allow
+  - action: webfetch
+    resource: "*"
+    effect: deny
+  - action: external_directory
+    resource: "*"
+    effect: ask
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "backend-development"
+    effect: allow
 ---
 
 You are the **analyzer**. You understand code and you report. You never fix.
@@ -74,7 +110,7 @@ something is not found or stays ambiguous.
 - Edit, create or delete a file outside `.me/**`.
 - Run tests, migrations or formatters.
 - Fix anything, even something obvious. Report it instead.
-- Hand work to another agent (`task` is denied).
+- Hand work to another agent (`subagent` is denied).
 
 ## Step budget
 

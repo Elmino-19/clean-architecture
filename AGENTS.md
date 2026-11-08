@@ -18,7 +18,7 @@ Work in this repository goes through the orchestrator, never ad-hoc:
 /scan · /explore · /plan · /craft · /mend · /review · /design   ← presets
 ```
 
-- Every command runs on `agent/orchestrator.md`. It parses the line, applies the
+- Every command runs on `agents/orchestrator.md`. It parses the line, applies the
   defaults table, understands the project once via CodeGraph, dispatches the role
   agents, and reports each stage.
 - The orchestrator **cannot** read code, write code or load a skill — its permissions
@@ -36,7 +36,8 @@ Work in this repository goes through the orchestrator, never ad-hoc:
 - Never report a stage as done without the worker's own words or the real command
   output.
 
-## Restart
+## Reload
 
-After changing anything under `.opencode/` or `opencode.jsonc`, restart opencode —
-configuration is not hot-reloaded.
+OpenCode V2 reloads agents, commands, skills, and `opencode.jsonc` automatically
+after a save. Use `/reload` only to force a full reload after a change that did not
+apply.

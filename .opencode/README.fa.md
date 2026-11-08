@@ -23,12 +23,12 @@
 ## ۱. شکل کلی
 
 ```text
-کاربر ──▶ /go | /scan | /plan | /craft | /mend | /review | /design
+کاربر ──▶ /go | /scan | /explore | /plan | /craft | /mend | /review | /design
             │  (۸ فایل نازک، بدون هیچ منطقی)
             ▼
         orchestrator  (منشی)
         پارس · اعمال پیش‌فرض‌ها · یک‌بار کدگراف · dispatch · گزارش
-            │  task(subtask)
+            │  subagent
             ├── analyzer   (فقط‌خواندنی)            ── بررسی
             ├── planner    (می‌نویسد: .me/runs)    ── پلن
             ├── coder      (می‌نویسد: app/, test/)   ── کد جدید
@@ -136,7 +136,7 @@
 | `orchestrator` | ندارد (فقط کاتالوگ) | ۲۵ | `.me/**` | خیر | خواندن کد، نوشتن کد، بارگذاری اسکیل |
 | `analyzer` | `backend-development` | ۲۰ | `.me/**` | خیر | هرگونه اصلاح، dispatch کردن |
 | `planner` | `backend-development` | ۱۵ | `.me/**` | خیر | نوشتن کد |
-| `coder` | `backend-development` | ۴۰ | `app/**`, `test/**`, `migrations/versions/**`, `.me/**` | خیر | هر چیز بیرون از تسک‌فایلش |
+| `coder` | `backend-development` | ۴۰ | `app/**`, `test/**`, `migrations/versions/**`, `migrations/env.py`, `.me/**` | خیر | هر چیز بیرون از تسک‌فایلش |
 | `editor` | `backend-development` | ۳۰ | مثل coder | خیر | گسترش دامنه، اصلاح موارد فهرست‌نشده |
 | `reviewer` | `backend-development` | ۲۰ | `.me/**` | **بله، یک‌بار** | هرگونه اصلاح |
 | `sdd-writer` | `software-design-document` | ۲۵ | `docs/**` | خیر | کد تولیدی |
@@ -154,10 +154,10 @@
 
 ## ۶. پروتکل dispatch
 
-هر فراخوانی `task` خودبسنده است — کارگر هیچ کانتکست مشترکی ندارد:
+هر فراخوانی `subagent` خودبسنده است — کارگر هیچ کانتکست مشترکی ندارد:
 
 ```text
-subagent_type: coder
+agent:         coder
 description:   craft — modules key, example
 prompt:        ROLE: coder
                RUN: .me/runs/20260101-1200-key-crud/
@@ -210,17 +210,17 @@ Open items: <فهرست>   ·   Next step: <قدم بعدی>
 
 ---
 
-## ۹. پیکربندی و ری‌استارت
+## ۹. پیکربندی و reload
 
-ایجنت‌ها در `.opencode/agent/` و کامندها در `.opencode/command/` هستند و وقتی ریپو
+ایجنت‌ها در `.opencode/agents/` و کامندها در `.opencode/commands/` هستند و وقتی ریپو
 پوشه‌ی کاری باشد، خودکار بارگذاری می‌شوند. برای استفاده در همه‌ی پروژه‌های این ماشین:
 
 ```bash
 make opencode      # کپی اسکیل‌ها، کامندها و ایجنت‌ها به ~/.config/opencode/
 ```
 
-**بعد از هر تغییر زیر `.opencode/` یا در `opencode.jsonc`، opencode را restart کنید** —
-کانفیگ hot-reload نمی‌شود.
+OpenCode V2 **کانفیگ را خودکار reload می‌کند**؛ بعد از هر تغییر زیر `.opencode/` یا در
+`opencode.jsonc` نیازی به restart نیست. فقط برای reload کامل دستی از `/reload` استفاده کنید.
 
 ---
 
@@ -228,9 +228,9 @@ make opencode      # کپی اسکیل‌ها، کامندها و ایجنت‌�
 
 | نشانه | علت | راه‌حل |
 |---|---|---|
-| کامند در پالت نیست | opencode ری‌استارت نشده | خارج شوید و دوباره باز کنید |
+| کامند در پالت نیست | فایل کامند در `.opencode/commands/` ذخیره نشده | همان‌جا ذخیره کنید و `/reload` بزنید |
 | «کدام کار؟» پرسیده شد | به `/go` verb ندادید | verb اضافه کنید یا از پریست استفاده کنید |
 | ۳ کارگر اجرا شد | `-n` ندادید (پیش‌فرض ۳ است) | در انتهای خط `-n N` بگذارید |
 | مرحله‌ای اجرا شد که نخواستید | اضافه‌شدن خودکار مرحله | در گزارش اعلام می‌شود؛ با پریست verbها را ثابت کنید |
 | منشی از خواندن فایلی طفره رفت | عمدی است — او کد نمی‌خواند | از یک پریست/کارگر جزئیات بخواهید یا مستقیم `@` کارگر را صدا بزنید |
-| `make test` دو بار اجرا شد | یک کارگر اجرا کرده (کانفیگ قدیمی) | ری‌استارت کنید، `bash` کارگر را چک کنید |
+| `make test` دو بار اجرا شد | یک کارگر اجرا کرده (کانفیگ قدیمی) | `/reload` بزنید و مجوز `shell` کارگر را چک کنید |
